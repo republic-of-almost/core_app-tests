@@ -43,6 +43,7 @@ project_defaults = {
 
   defines_macosx = {
     "MATH_USE_SIMD",
+    "CORE_DEBUG_MENU",
   },
 
   defines_windows = {
