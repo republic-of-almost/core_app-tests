@@ -4,7 +4,7 @@
 
 #include <core/common/core_fwd.hpp>
 #include <core/entity/entity.hpp>
-#include <math/vec3/vec_fwd.hpp>
+#include <math/vec/vec_fwd.hpp>
 
 
 namespace Core {
@@ -15,7 +15,7 @@ class Actor final
 {
 public:
 
-  explicit          Actor(const Core::World &world);
+  explicit          Actor(Core::World &world);
   
   Core::Transform   get_head_transform() const;
   

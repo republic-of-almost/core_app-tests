@@ -1,5 +1,5 @@
 #include <framework/actor.hpp>
-#include <core/tranform/transform.hpp>
+#include <core/transform/transform.hpp>
 #include <core/entity/entity_ref.hpp>
 #include <core/world/world.hpp>
 #include <math/vec/vec3.hpp>
@@ -9,7 +9,7 @@ namespace Core {
 namespace Lib {
 
 
-Actor::Actor(const Core::World &world)
+Actor::Actor(Core::World &world)
 : m_entity(world)
 , m_pending_force(math::vec3_zero())
 {
@@ -17,7 +17,7 @@ Actor::Actor(const Core::World &world)
 
 
 Core::Transform
-Actor::get_head_transform()
+Actor::get_head_transform() const
 {
   return Core::Transform();
 }
