@@ -7,6 +7,9 @@
 #include <core/resources/texture.hpp>
 #include <core/resources/material.hpp>
 #include <core/model/model.hpp>
+#include <core/physics/rigidbody.hpp>
+#include <core/physics/box_collider.hpp>
+#include <core/physics/collider.hpp>
 #include <core/common/directory.hpp>
 #include <core/transform/transform.hpp>
 #include <core/renderer/material_renderer.hpp>
@@ -25,6 +28,7 @@
   Creates a simple fps style scene.
 */
 
+
   q3Scene scene(1.0/60.0);
 
 int
@@ -41,9 +45,21 @@ main()
   
   const Core::Shader shader_fullbright(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
   const Core::Texture texture_orange(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png"));
+  const Core::Texture texture_red(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png"));
+  const Core::Texture texture_green(Core::Directory::volatile_resource_path("assets/textures/dev_grid_green_512.png"));
+  
   Core::Material material_fb_or("fullbright-orange");
   material_fb_or.set_shader(shader_fullbright);
   material_fb_or.set_map_01(texture_orange);
+
+  Core::Material material_fb_red("fullbright-red");
+  material_fb_red.set_shader(shader_fullbright);
+  material_fb_red.set_map_01(texture_red);
+
+  Core::Material material_fb_green("fullbright-green");
+  material_fb_green.set_shader(shader_fullbright);
+  material_fb_green.set_map_01(texture_green);
+
   
   Core::Model model_plane(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"));
   Core::Model model_cube(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
@@ -78,9 +94,16 @@ main()
     
     ground_entity.set_transform(transform);
     
+    Core::Rigidbody rb;
+    rb.set_collider(Core::Box_collider(1,1,1));
+    rb.set_mass(0);
+    
+    ground_entity.set_rigidbody(rb);
+    
+    
     Core::Material_renderer ground_renderer;
     ground_renderer.set_material(material_fb_or);
-    ground_renderer.set_model(model_plane);
+    ground_renderer.set_model(model_cube);
     
     ground_entity.set_renderer(ground_renderer);
   }
@@ -91,78 +114,82 @@ main()
 	scene.SetAllowSleep(false);
 
   // Falling body
-  q3Body *falling = nullptr;
-  {
-    q3BodyDef bodyDef;
-    bodyDef.allowSleep = false;
-    bodyDef.position.Set(0.5f, 3.0f, 0.0f);
-    bodyDef.bodyType = eDynamicBody;
-    
-    q3Body *body = scene.CreateBody(bodyDef);
-    
-    q3BoxDef boxDef;
-    boxDef.SetDensity(0.5f);
-    
-    q3Transform localSpace;
-    q3Identity(localSpace);
-    boxDef.Set(localSpace, q3Vec3(1.f, 1.f, 1.f));
-    
-    body->AddBox(boxDef);
-    
-    falling = body;
-  }
+//  q3Body *falling = nullptr;
+//  {
+//    q3BodyDef bodyDef;
+//    bodyDef.allowSleep = false;
+//    bodyDef.position.Set(0.5f, 3.0f, 0.0f);
+//    bodyDef.bodyType = eDynamicBody;
+//    
+//    q3Body *body = scene.CreateBody(bodyDef);
+//    
+//    q3BoxDef boxDef;
+////    boxDef.SetDensity(0.5f);
+//    
+//    q3Transform localSpace;
+//    q3Identity(localSpace);
+//    boxDef.Set(localSpace, q3Vec3(1.f, 1.f, 1.f));
+//    
+//    body->AddBox(boxDef);
+//    
+//    falling = body;
+//  }
   
-  q3Body *falling2 = nullptr;
-  {
-    q3BodyDef bodyDef;
-    bodyDef.allowSleep = false;
-    bodyDef.position.Set(0.0f, 4.0f, 0.0f);
-    bodyDef.bodyType = eDynamicBody;
-    
-    q3Body *body = scene.CreateBody(bodyDef);
-    
-    q3BoxDef boxDef;
-    boxDef.SetDensity(0.5f);
-    
-    q3Transform localSpace;
-    q3Identity(localSpace);
-    boxDef.Set(localSpace, q3Vec3(1.f, 1.f, 1.f));
-    
-    body->AddBox(boxDef);
-    
-    falling2 = body;
-  }
+//  q3Body *falling2 = nullptr;
+//  {
+//    q3BodyDef bodyDef;
+//    bodyDef.allowSleep = false;
+//    bodyDef.position.Set(0.0f, 4.0f, 0.0f);
+//    bodyDef.bodyType = eDynamicBody;
+//    
+//    q3Body *body = scene.CreateBody(bodyDef);
+//    
+//    q3BoxDef boxDef;
+////    boxDef.SetDensity(0.5f);
+//    
+//    q3Transform localSpace;
+//    q3Identity(localSpace);
+//    boxDef.Set(localSpace, q3Vec3(1.f, 1.f, 1.f));
+//    
+//    body->AddBox(boxDef);
+//    
+//    falling2 = body;
+//  }
   
-  // Ground body
-  q3Body *ground;
-  {
-    q3BodyDef bodyDef;
-    q3Body *body = scene.CreateBody(bodyDef);
-    
-    q3BoxDef boxDef;
-    boxDef.SetRestitution(0);
-
-    q3Transform localSpace;
-    q3Identity(localSpace);
-
-    boxDef.Set(localSpace, q3Vec3(50.0f, 1.0f, 50.0f));
-    
-    body->AddBox(boxDef);
-    
-    ground = body;
-  }
+//  // Ground body
+//  q3Body *ground;
+//  {
+//    q3BodyDef bodyDef;
+//    q3Body *body = scene.CreateBody(bodyDef);
+//    
+//    q3BoxDef boxDef;
+//    boxDef.SetRestitution(0);
+//
+//    q3Transform localSpace;
+//    q3Identity(localSpace);
+//
+//    boxDef.Set(localSpace, q3Vec3(50.0f, 1.0f, 50.0f));
+//    
+//    body->AddBox(boxDef);
+//    
+//    ground = body;
+//  }
   
   Core::Entity phys_box(world);
   {
     Core::Transform transform;
-    transform.set_position(math::vec3_init(0, 2, 0));
+    transform.set_position(math::vec3_init(0.5, 3, 0));
     
     phys_box.set_transform(transform);
     
     Core::Material_renderer renderer;
-    renderer.set_material(material_fb_or);
+    renderer.set_material(material_fb_red);
     renderer.set_model(model_cube);
     
+    Core::Rigidbody rb;
+    rb.set_collider(Core::Box_collider(1,1,1));
+    
+    phys_box.set_rigidbody(rb);
     phys_box.set_renderer(renderer);
   }
   
@@ -173,8 +200,13 @@ main()
     
     phys_box2.set_transform(transform);
     
+    Core::Rigidbody rb;
+    rb.set_collider(Core::Box_collider(1,1,1));
+    
+    phys_box2.set_rigidbody(rb);
+    
     Core::Material_renderer renderer;
-    renderer.set_material(material_fb_or);
+    renderer.set_material(material_fb_green);
     renderer.set_model(model_cube);
     
     phys_box2.set_renderer(renderer);
@@ -186,7 +218,7 @@ main()
   while(context.is_open())
   {
     // Phys test
-    scene.Step();
+//    scene.Step();
     
     auto to_core_trans = [](const q3Transform &other)
     {
@@ -206,9 +238,9 @@ main()
       return trans;
     };
     
-    phys_box.set_transform(to_core_trans(falling->GetTransform()));
-    phys_box2.set_transform(to_core_trans(falling2->GetTransform()));
-    ground_entity.set_transform(to_core_trans(ground->GetTransform()));
+//    phys_box.set_transform(to_core_trans(falling->GetTransform()));
+//    phys_box2.set_transform(to_core_trans(falling2->GetTransform()));
+//    ground_entity.set_transform(to_core_trans(ground->GetTransform()));
     
     // ** FPS INPUT ** //
     {
@@ -248,7 +280,7 @@ main()
       
       if(controller.is_button_down_on_frame(Core::Button::button_0))
       {
-        falling->ApplyForceAtWorldPoint(q3Vec3(0, 300, 0), falling->GetTransform().position);
+//        falling->ApplyForceAtWorldPoint(q3Vec3(0, 300, 0), falling->GetTransform().position);
       }
     }
   
