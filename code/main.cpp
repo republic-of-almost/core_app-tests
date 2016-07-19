@@ -72,7 +72,7 @@ main()
     cam_entity.set_name("Camera");
     
     Core::Transform transform;
-    transform.set_position(math::vec3_init(0.f, 1.f, 10.f));
+    transform.set_position(math::vec3_init(0.f, 3.f, 10.f));
     
     cam_entity.set_transform(transform);
     
@@ -99,7 +99,6 @@ main()
     rb.set_mass(0);
     
     ground_entity.set_rigidbody(rb);
-    
     
     Core::Material_renderer ground_renderer;
     ground_renderer.set_material(material_fb_or);
