@@ -39,9 +39,8 @@ main()
   Core::Context context(800, 480, false, "FPS Test", setup);
   Core::World world(context);
   
-  world.set_collision_callback([](Core::Collision_type type,
-                                  Core::Entity_ref entity_a,
-                                  Core::Entity_ref entity_b)
+  world.set_collision_callback([](const Core::Collision_type type,
+                                  const Core::Collision &collision)
   {
     
   });
