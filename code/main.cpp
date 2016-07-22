@@ -114,6 +114,8 @@ main()
   
   Core::Entity phys_box(world);
   {
+    phys_box.set_name("Phys Box");
+    
     Core::Transform transform;
     transform.set_position(math::vec3_init(0.5, 3, 0));
     transform.set_scale(math::vec3_init(1,1,1));
