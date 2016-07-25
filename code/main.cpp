@@ -18,6 +18,8 @@
 #include <core/input/buttons.hpp>
 #include <core/input/axis.hpp>
 #include <core/color/color_predefined.hpp>
+#include <core/physics/ray.hpp>
+#include <framework/actor.hpp>
 
 // - phys test
 #include <3rdparty/qu3e/q3.h>
@@ -191,10 +193,32 @@ main()
     phys_box4.set_renderer(renderer);
   }
   
+  
+  Core::Lib::Actor actor(world);
+  Core::Entity actor_view(world);
+  {
+    Core::Transform transform;
+    transform.set_position(math::vec3_init(0.25, 5, 0.25));
+    
+    actor_view.set_transform(transform);
+    
+//    Core::Rigidbody rb;
+//    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
+//    
+//    actor.set_rigidbody(rb);
+    
+    Core::Material_renderer renderer;
+    renderer.set_material(material_fb_green);
+    renderer.set_model(model_cube);
+    
+    actor_view.set_renderer(renderer);
+  }
+  
   // ** RUN WINDOW AND APP ** //
   
   while(context.is_open())
   {
+  
 //    // Make trigger move
 //    {
 //      Core::Transform trans = phys_box.get_transform();
@@ -207,6 +231,17 @@ main()
 //      
 //      phys_box.set_transform(trans);
 //    }
+  
+    // Actor
+    {
+      Core::Controller controller(context, 0);
+      
+      actor.move_fwd(controller.get_axis(0).y);
+      actor.move_left(controller.get_axis(0).x);
+    
+      actor.apply_forces(world.get_delta_time());
+      actor_view.set_transform(actor.get_head_ref().get_transform());
+    }
   
     // ** FPS INPUT ** //
     {
@@ -242,7 +277,7 @@ main()
         transform.set_rotation(rot);
       }
       
-      cam_entity.set_transform(transform);
+      //cam_entity.set_transform(transform);
       
       if(controller.is_button_down_on_frame(Core::Button::button_0))
       {
