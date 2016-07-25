@@ -238,6 +238,7 @@ main()
       
       actor.move_fwd(controller.get_axis(0).y);
       actor.move_left(controller.get_axis(0).x);
+      actor.rotate(controller.get_axis(1).x);
     
       actor.apply_forces(world.get_delta_time());
       actor_view.set_transform(actor.get_head_ref().get_transform());
@@ -277,7 +278,7 @@ main()
         transform.set_rotation(rot);
       }
       
-      //cam_entity.set_transform(transform);
+//      cam_entity.set_transform(transform);
       
       if(controller.is_button_down_on_frame(Core::Button::button_0))
       {

@@ -23,7 +23,7 @@ public:
 
   void              move_fwd(const float fwd);
   void              move_left(const float left);
-  void              jump(const float pwr);
+  void              rotate(const float rt);
 
   Core::Entity_ref  get_head_ref() const;
   Core::Entity_ref  get_body_ref() const;
@@ -34,6 +34,9 @@ private:
   Core::Entity      m_body_entity;
   math::vec3        m_pending_force;
   Core::World       &m_world;
+  
+  float             m_accum_body_rot = 0;
+  float             m_pending_body_rot = 0;
   
 }; // class
 

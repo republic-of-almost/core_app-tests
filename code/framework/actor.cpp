@@ -59,6 +59,17 @@ Actor::apply_forces(const float dt)
     
     m_head_entity.set_transform(head_transform);
   }
+  
+  // Rotation
+  {
+    m_accum_body_rot += (m_pending_body_rot * dt);
+    m_pending_body_rot = 0;
+    const math::quat rot = math::quat_init_with_axis_angle(0, 1, 0, m_accum_body_rot);
+    
+    Core::Transform head_transform = m_head_entity.get_transform();
+    head_transform.set_rotation(rot);
+    m_head_entity.set_transform(head_transform);
+  }
 }
 
 
@@ -79,8 +90,9 @@ Actor::move_left(const float left)
 
 
 void
-Actor::jump(const float jmp)
+Actor::rotate(const float rt)
 {
+  m_pending_body_rot += rt;
 }
 
 
