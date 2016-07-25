@@ -98,7 +98,7 @@ main()
     ground_entity.set_transform(transform);
     
     Core::Rigidbody rb;
-    rb.set_collider(Core::Box_collider(1,1,1));
+    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
     rb.set_mass(0);
     rb.set_is_dynamic(false);
     
@@ -127,86 +127,86 @@ main()
     renderer.set_model(model_cube);
     
     Core::Rigidbody rb;
-    rb.set_collider(Core::Box_collider(1,1,1));
+    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
     rb.set_is_trigger(true);
         
     phys_box.set_rigidbody(rb);
     phys_box.set_renderer(renderer);
   }
   
-//  Core::Entity phys_box2(world);
-//  {
-//    Core::Transform transform;
-//    transform.set_position(math::vec3_init(0, 6, 0));
-//    
-//    phys_box2.set_transform(transform);
-//    
-//    Core::Rigidbody rb;
-//    rb.set_collider(Core::Box_collider(1,1,1));
-//    
-//    phys_box2.set_rigidbody(rb);
-//    
-//    Core::Material_renderer renderer;
-//    renderer.set_material(material_fb_green);
-//    renderer.set_model(model_cube);
-//    
-//    phys_box2.set_renderer(renderer);
-//  }
+  Core::Entity phys_box2(world);
+  {
+    Core::Transform transform;
+    transform.set_position(math::vec3_init(0, 6, 0));
+    
+    phys_box2.set_transform(transform);
+    
+    Core::Rigidbody rb;
+    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
+    
+    phys_box2.set_rigidbody(rb);
+    
+    Core::Material_renderer renderer;
+    renderer.set_material(material_fb_green);
+    renderer.set_model(model_cube);
+    
+    phys_box2.set_renderer(renderer);
+  }
 
-//  Core::Entity phys_box3(world);
-//  {
-//    Core::Transform transform;
-//    transform.set_position(math::vec3_init(-0.5, 4, 0.2));
-//    
-//    phys_box3.set_transform(transform);
-//    
-//    Core::Rigidbody rb;
-//    rb.set_collider(Core::Box_collider(1,1,1));
-//    
-//    phys_box3.set_rigidbody(rb);
-//    
-//    Core::Material_renderer renderer;
-//    renderer.set_material(material_fb_red);
-//    renderer.set_model(model_cube);
-//    
-//    phys_box3.set_renderer(renderer);
-//  }
-//  
-//  Core::Entity phys_box4(world);
-//  {
-//    Core::Transform transform;
-//    transform.set_position(math::vec3_init(0.25, 5, 0.25));
-//    
-//    phys_box4.set_transform(transform);
-//    
-//    Core::Rigidbody rb;
-//    rb.set_collider(Core::Box_collider(1,1,1));
-//    
-//    phys_box4.set_rigidbody(rb);
-//    
-//    Core::Material_renderer renderer;
-//    renderer.set_material(material_fb_green);
-//    renderer.set_model(model_cube);
-//    
-//    phys_box4.set_renderer(renderer);
-//  }
+  Core::Entity phys_box3(world);
+  {
+    Core::Transform transform;
+    transform.set_position(math::vec3_init(-0.5, 4, 0.2));
+    
+    phys_box3.set_transform(transform);
+    
+    Core::Rigidbody rb;
+    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
+    
+    phys_box3.set_rigidbody(rb);
+    
+    Core::Material_renderer renderer;
+    renderer.set_material(material_fb_red);
+    renderer.set_model(model_cube);
+    
+    phys_box3.set_renderer(renderer);
+  }
+  
+  Core::Entity phys_box4(world);
+  {
+    Core::Transform transform;
+    transform.set_position(math::vec3_init(0.25, 5, 0.25));
+    
+    phys_box4.set_transform(transform);
+    
+    Core::Rigidbody rb;
+    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
+    
+    phys_box4.set_rigidbody(rb);
+    
+    Core::Material_renderer renderer;
+    renderer.set_material(material_fb_green);
+    renderer.set_model(model_cube);
+    
+    phys_box4.set_renderer(renderer);
+  }
   
   // ** RUN WINDOW AND APP ** //
   
   while(context.is_open())
   {
-    // Make trigger move
-    {
-      Core::Transform trans = phys_box.get_transform();
-      
-      static float movement = 0.f;
-      movement += 0.1f;
-      const float offset = 2 * math::sin(movement);
-      
-      trans.set_position(math::vec3_init(0, offset, 0));
-      
-      phys_box.set_transform(trans);
-    }
+//    // Make trigger move
+//    {
+//      Core::Transform trans = phys_box.get_transform();
+//      
+//      static float movement = 0.f;
+//      movement += 0.1f;
+//      const float offset = 2 * math::sin(movement);
+//      
+//      trans.set_position(math::vec3_init(0, offset, 0));
+//      
+//      phys_box.set_transform(trans);
+//    }
   
     // ** FPS INPUT ** //
     {
