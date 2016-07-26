@@ -20,9 +20,15 @@
 #include <core/color/color_predefined.hpp>
 #include <core/physics/ray.hpp>
 #include <framework/actor.hpp>
+#include <utilities/logging.hpp>
+#include <cstring>
 
 // - phys test
 #include <3rdparty/qu3e/q3.h>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 
 /*
   FPS Demo
@@ -46,6 +52,49 @@ main()
   {
     
   });
+  
+  // Text
+      std::vector<uint8_t> data;
+    data.resize(256 * 256);
+    
+    for(auto &d : data)
+    {
+      d = 255;
+    }
+  
+  Core::Texture font_texture(128, 128);
+  {
+    FT_Library  library;
+    auto error = FT_Init_FreeType( &library );
+    if ( error )
+    {
+      LOG_ERROR("Failed init freetype lib");
+    }
+    
+    FT_Face face;      /* handle to face object */
+    error = FT_New_Face( library,
+                         "/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf",
+                         0,
+                         &face );
+    if ( error )
+    {
+      LOG_ERROR("Font err")
+    }
+    
+
+    FT_GlyphSlot slot = face->glyph;
+    
+    FT_Set_Pixel_Sizes(face, 0, 64);
+    FT_Load_Char(face, 9786, FT_LOAD_RENDER);
+    
+    font_texture.update_sub_texture(0,
+                                    0,
+                                    face->glyph->bitmap.width,
+                                    face->glyph->bitmap.rows,
+                                    face->glyph->bitmap.buffer);
+  }
+  
+  
   
   // ** SETUP RESOURCES ** //
   
@@ -113,14 +162,27 @@ main()
     ground_entity.set_renderer(ground_renderer);
   }
   
+  // Make a bunch of entities
+  constexpr uint32_t number_of_entities = 16;
+  Core::Entity entities[number_of_entities];
   
-  Core::Entity phys_box(world);
+  for(uint32_t i = 0; i < number_of_entities; ++i)
   {
-    phys_box.set_name("Phys Box");
+    auto &phys_box = entities[i];
+    phys_box = Core::Entity(world);
+    
+    char buffer[256];
+    memset(buffer, 0, sizeof(buffer));
+    
+    sprintf(buffer, "Rigidbody-%d", i);
+    
+    phys_box.set_name(buffer);
     
     Core::Transform transform;
-    transform.set_position(math::vec3_init(0.5, 3, 0));
-    transform.set_scale(math::vec3_init(1,1,1));
+    transform.set_scale(math::vec3_init(1.f, 1.f, 1.f));
+    transform.set_position(math::vec3_init(0.5f,
+                                           3.f + math::to_float(i),
+                                           0.f));
     
     phys_box.set_transform(transform);
     
@@ -130,75 +192,17 @@ main()
     
     Core::Rigidbody rb;
     rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
-    rb.set_is_trigger(true);
+    rb.set_is_trigger(false);
         
     phys_box.set_rigidbody(rb);
     phys_box.set_renderer(renderer);
   }
   
-  Core::Entity phys_box2(world);
-  {
-    Core::Transform transform;
-    transform.set_position(math::vec3_init(0, 6, 0));
-    
-    phys_box2.set_transform(transform);
-    
-    Core::Rigidbody rb;
-    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
-    
-    phys_box2.set_rigidbody(rb);
-    
-    Core::Material_renderer renderer;
-    renderer.set_material(material_fb_green);
-    renderer.set_model(model_cube);
-    
-    phys_box2.set_renderer(renderer);
-  }
-
-  Core::Entity phys_box3(world);
-  {
-    Core::Transform transform;
-    transform.set_position(math::vec3_init(-0.5, 4, 0.2));
-    
-    phys_box3.set_transform(transform);
-    
-    Core::Rigidbody rb;
-    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
-    
-    phys_box3.set_rigidbody(rb);
-    
-    Core::Material_renderer renderer;
-    renderer.set_material(material_fb_red);
-    renderer.set_model(model_cube);
-    
-    phys_box3.set_renderer(renderer);
-  }
-  
-  Core::Entity phys_box4(world);
-  {
-    Core::Transform transform;
-    transform.set_position(math::vec3_init(0.25, 5, 0.25));
-    
-    phys_box4.set_transform(transform);
-    
-    Core::Rigidbody rb;
-    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
-    
-    phys_box4.set_rigidbody(rb);
-    
-    Core::Material_renderer renderer;
-    renderer.set_material(material_fb_green);
-    renderer.set_model(model_cube);
-    
-    phys_box4.set_renderer(renderer);
-  }
-  
-  
   Core::Lib::Actor actor(world);
   Core::Entity actor_view(world);
   {
     Core::Transform transform;
-    transform.set_position(math::vec3_init(0.25, 5, 0.25));
+    transform.set_position(math::vec3_init(0.25f, 5.f, 0.25f));
     
     actor_view.set_transform(transform);
     
@@ -218,20 +222,6 @@ main()
   
   while(context.is_open())
   {
-  
-//    // Make trigger move
-//    {
-//      Core::Transform trans = phys_box.get_transform();
-//      
-//      static float movement = 0.f;
-//      movement += 0.1f;
-//      const float offset = 2 * math::sin(movement);
-//      
-//      trans.set_position(math::vec3_init(0, offset, 0));
-//      
-//      phys_box.set_transform(trans);
-//    }
-  
     // Actor
     {
       Core::Controller controller(context, 0);

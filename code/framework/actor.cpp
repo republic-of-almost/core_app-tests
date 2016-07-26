@@ -4,6 +4,7 @@
 #include <core/physics/ray.hpp>
 #include <core/world/world.hpp>
 #include <math/vec/vec3.hpp>
+#include <renderer/debug_line.hpp>
 
 
 namespace Core {
@@ -32,6 +33,8 @@ Actor::apply_forces(const float dt)
 {
   const math::vec3 pos = m_head_entity.get_transform().get_position();
   Core::Ray ray(m_world, pos, math::vec3_init(0, -1, 0));
+  
+  ::Renderer::debug_line(pos, math::vec3_add(pos, math::vec3_init(0, -1, 0)), math::vec3_init(1,1,1));
 
   if(ray.has_hit())
   {
@@ -49,7 +52,7 @@ Actor::apply_forces(const float dt)
   {
     Core::Transform head_transform = m_head_entity.get_transform();
 
-    const math::vec3 scaled_force = math::vec3_scale(m_pending_force, dt);
+    const math::vec3 scaled_force = math::vec3_scale(m_pending_force, dt * 10);
     const math::vec3 rotated_force = math::quat_rotate_point(head_transform.get_rotation(), scaled_force);
     const math::vec3 final_position = math::vec3_add(head_transform.get_position(), rotated_force);
     
@@ -62,7 +65,7 @@ Actor::apply_forces(const float dt)
   
   // Rotation
   {
-    m_accum_body_rot += (m_pending_body_rot * dt);
+    m_accum_body_rot += (m_pending_body_rot * dt * 4);
     m_pending_body_rot = 0;
     const math::quat rot = math::quat_init_with_axis_angle(0, 1, 0, m_accum_body_rot);
     
