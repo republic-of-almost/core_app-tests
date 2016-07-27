@@ -3,8 +3,10 @@
 #include <core/entity/entity_ref.hpp>
 #include <core/physics/ray.hpp>
 #include <core/world/world.hpp>
+#include <core/color/color.hpp>
+#include <core/color/color_predefined.hpp>
 #include <math/vec/vec3.hpp>
-#include <renderer/debug_line.hpp>
+#include <core/debug/line_renderer.hpp>
 
 
 namespace Core {
@@ -34,8 +36,6 @@ Actor::apply_forces(const float dt)
   const math::vec3 pos = m_head_entity.get_transform().get_position();
   Core::Ray ray(m_world, pos, math::vec3_init(0, -1, 0));
   
-  ::Renderer::debug_line(pos, math::vec3_add(pos, math::vec3_init(0, -1, 0)), math::vec3_init(1,1,1));
-
   if(ray.has_hit())
   {
     // Get position and move up, this is where our head is.
@@ -47,6 +47,8 @@ Actor::apply_forces(const float dt)
     trans.set_position(head_height);
     m_head_entity.set_transform(trans);
   }
+  
+  Core::Debug::debug_line(pos, math::vec3_add(pos, math::vec3_init(0, -ray.get_distance(), 0)), Core::Color_utils::white());
 
   // Calculate forces
   {
