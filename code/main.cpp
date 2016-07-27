@@ -19,15 +19,14 @@
 #include <core/input/axis.hpp>
 #include <core/color/color_predefined.hpp>
 #include <core/physics/ray.hpp>
+#include <core/font/font.hpp>
+#include <core/renderer/text_renderer.hpp>
 #include <framework/actor.hpp>
 #include <utilities/logging.hpp>
 #include <cstring>
 
 // - phys test
 #include <3rdparty/qu3e/q3.h>
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 
 /*
@@ -62,38 +61,15 @@ main()
       d = 255;
     }
   
-  Core::Texture font_texture(128, 128);
-  {
-    FT_Library  library;
-    auto error = FT_Init_FreeType( &library );
-    if ( error )
-    {
-      LOG_ERROR("Failed init freetype lib");
-    }
-    
-    FT_Face face;      /* handle to face object */
-    error = FT_New_Face( library,
-                         "/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf",
-                         0,
-                         &face );
-    if ( error )
-    {
-      LOG_ERROR("Font err")
-    }
-    
-
-    FT_GlyphSlot slot = face->glyph;
-    
-    FT_Set_Pixel_Sizes(face, 0, 64);
-    FT_Load_Char(face, 9786, FT_LOAD_RENDER);
-    
-    font_texture.update_sub_texture(0,
-                                    0,
-                                    face->glyph->bitmap.width,
-                                    face->glyph->bitmap.rows,
-                                    face->glyph->bitmap.buffer);
-  }
+  Core::Font my_font("/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf");
   
+  Core::Entity text_entity(world);
+  text_entity.set_name("text-test");
+  
+  Core::Text_renderer text_renderer;
+  text_renderer.set_font(my_font);
+  text_renderer.set_text("Foo bar 123 #!.[]<>^");
+  text_entity.set_renderer(text_renderer);
   
   
   // ** SETUP RESOURCES ** //
