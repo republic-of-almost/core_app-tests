@@ -68,7 +68,7 @@ main()
   
   Core::Text_renderer text_renderer;
   text_renderer.set_font(my_font);
-  text_renderer.set_text("Foo bar 123 #!.[]<>^");
+  text_renderer.set_text("Foo-bar-123-#!.[]<>^");
   text_entity.set_renderer(text_renderer);
   
   
