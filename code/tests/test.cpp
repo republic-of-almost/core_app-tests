@@ -16,8 +16,9 @@ App::~App()
 
 
 void
-App::on_update()
+App::on_think()
 {
+  m_world.think();
 }
 
 

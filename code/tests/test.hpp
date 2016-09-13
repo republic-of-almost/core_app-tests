@@ -16,7 +16,7 @@ public:
   explicit          App(Core::Context &ctx);
   virtual           ~App();
 
-  virtual void      on_update();
+  virtual void      on_think();
 
 protected:
 
