@@ -18,7 +18,7 @@
 #include <core/input/buttons.hpp>
 #include <core/input/axis.hpp>
 #include <core/color/color_predefined.hpp>
-#include <core/physics/ray.hpp>
+#include <core/common/ray.hpp>
 #include <core/font/font.hpp>
 #include <core/renderer/text_renderer.hpp>
 #include <framework/actor.hpp>
@@ -43,7 +43,9 @@ main()
 
   Core::Context_setup setup;
   setup.vsync = true;
-  Core::Context context(800, 480, false, "FPS Test", setup);
+  Core::Context context(800, 480, false, "Tests", setup);
+  
+  
   Core::World world(context);
   
   world.set_collision_callback([](const Core::Collision_type type,
@@ -61,15 +63,15 @@ main()
       d = 255;
     }
   
-  Core::Font my_font("/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf");
+//  Core::Font my_font("/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf");
   
-  Core::Entity text_entity(world);
-  text_entity.set_name("text-test");
-  
-  Core::Text_renderer text_renderer;
-  text_renderer.set_font(my_font);
-  text_renderer.set_text("Foo-bar-123-#!.[]<>^");
-  text_entity.set_renderer(text_renderer);
+//  Core::Entity text_entity(world);
+//  text_entity.set_name("text-test");
+//  
+//  Core::Text_renderer text_renderer;
+//  text_renderer.set_font(my_font);
+//  text_renderer.set_text("Foo-bar-123-#!.[]<>^");
+//  text_entity.set_renderer(text_renderer);
   
   
   // ** SETUP RESOURCES ** //
@@ -246,7 +248,7 @@ main()
       
 //      cam_entity.set_transform(transform);
       
-      if(controller.is_button_down_on_frame(Core::Button::button_0))
+//      if(controller.is_button_down_on_frame(Core::Button::button_0))
       {
 //        falling->ApplyForceAtWorldPoint(q3Vec3(0, 300, 0), falling->GetTransform().position);
       }
