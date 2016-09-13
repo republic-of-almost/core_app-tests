@@ -6,13 +6,13 @@ package.path = '../../premake_data/?.lua;' .. package.path
 require "premake_data"
 
 dofile("../../core/projects/core.lua")
-dofile("fps.lua")
+dofile("tests.lua")
 
 
 -- Solution data? Should this contain the the project names?
 solution_data = {
 
-  name = "FPS-Solution",
+  name = "Tests-Solution",
 
 }
 
@@ -58,5 +58,5 @@ project_defaults = {
 -- Generates the premake code calls.
 make.create_solution(solution_data,
                      project_defaults,
-                     fps_data,
+                     tests_data,
                      core_project_data);

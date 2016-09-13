@@ -1,8 +1,8 @@
 #!lua
 
-fps_data = {
+tests_data = {
 
-  name     = "FPS",
+  name     = "Tests",
   kind     = "WindowedApp",
   language = "C++",
   location = make.get_proj_root(),
