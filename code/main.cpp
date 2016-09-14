@@ -17,8 +17,8 @@ main()
   
   
   // ** CREATE TEST ** //
-//  std::unique_ptr<Test::App> curr_test(new Test::Material_test(context));
-  std::unique_ptr<Test::App> curr_test(new Test::Camera_test(context));
+  std::unique_ptr<Test::App> curr_test(new Test::Material_test(context));
+//  std::unique_ptr<Test::App> curr_test(new Test::Camera_test(context));
 
   // ** RUN TEST ** //
   while(context)
