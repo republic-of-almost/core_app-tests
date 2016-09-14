@@ -9,7 +9,6 @@
 
 
 namespace Test {
-
 namespace Material_test_utils {
 
 constexpr uint32_t max_materials() { return 2; }

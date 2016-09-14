@@ -29,7 +29,7 @@ constexpr float scene_cube_scale = 2.f;
 /*
   Calculates the camera orbit position for a given time.
 */
-inline Core::Transform
+Core::Transform
 camera_transform(const float time,
                  const float cam_tilt,
                  const float cam_dist,
@@ -56,7 +56,7 @@ camera_transform(const float time,
   return cam_trans;
 }
 
-}
+} // anon ns
 
 
 namespace Test {

@@ -1,5 +1,6 @@
 #include <core/context/context.hpp>
 #include <tests/material_test.hpp>
+#include <tests/camera_test.hpp>
 
 
 // - phys test
@@ -16,8 +17,8 @@ main()
   
   
   // ** CREATE TEST ** //
-  std::unique_ptr<Test::App> curr_test(new Test::Material_test(context));
-
+//  std::unique_ptr<Test::App> curr_test(new Test::Material_test(context));
+  std::unique_ptr<Test::App> curr_test(new Test::Camera_test(context));
 
   // ** RUN TEST ** //
   while(context)
