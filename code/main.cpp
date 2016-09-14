@@ -13,7 +13,7 @@ main()
   // ** SETUP CONTEXT ** //
   Core::Context_setup setup;
   setup.vsync = true;
-  Core::Context context(800, 480, false, "Tests", setup);
+  Core::Context context(1024, 576, false, "Tests", setup);
   
   
   // ** CREATE TEST ** //

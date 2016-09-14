@@ -1,4 +1,7 @@
 #include <tests/material_test.hpp>
+#include <tests/factories/texture_factory.hpp>
+#include <tests/factories/shader_factory.hpp>
+#include <tests/factories/model_factory.hpp>
 #include <core/entity/entity_ref.hpp>
 #include <core/common/directory.hpp>
 #include <core/model/model.hpp>
@@ -117,19 +120,12 @@ Material_test::Material_test(Core::Context &ctx)
   // ** Create Materials ** //
   {
     uint32_t curr_mat = 0;
-  
-    const Core::Shader shader_fullbright(Core::Directory::volatile_resource_path("/assets/shaders/basic_fullbright.ogl"));
-    assert(shader_fullbright);
     
     // Add material
     {
       Core::Material material_01("test_material_01");
-      
-      const Core::Texture texture_01(Core::Directory::volatile_resource_path("/assets/textures/dev_grid_green_512.png"));
-      assert(texture_01);
-    
-      material_01.set_shader(shader_fullbright);
-      material_01.set_map_01(texture_01);
+      material_01.set_shader(Shader_factory::get_fullbright());
+      material_01.set_map_01(Texture_factory::get_dev_green());
       
       assert(curr_mat < Mat_utils::max_materials());
       m_materials[curr_mat++] = material_01;
@@ -138,12 +134,9 @@ Material_test::Material_test(Core::Context &ctx)
     // Add material
     {
       Core::Material material_02("test_material_02");
-    
-      const Core::Texture texture_02(Core::Directory::volatile_resource_path("/assets/textures/dev_grid_red_512.png"));
-      assert(texture_02);
       
-      material_02.set_shader(shader_fullbright);
-      material_02.set_map_01(texture_02);
+      material_02.set_shader(Shader_factory::get_fullbright());
+      material_02.set_map_01(Texture_factory::get_dev_red());
       
       assert(curr_mat < Mat_utils::max_materials());
       m_materials[curr_mat++] = material_02;
@@ -155,26 +148,20 @@ Material_test::Material_test(Core::Context &ctx)
   // ** Create Renderers And Attach ** //
   {
     {
-      const Core::Model cube_model(Core::Directory::volatile_resource_path("/assets/models/unit_cube.obj"));
-      assert(cube_model);
-      
       uint32_t mat_id = 0;
       assert(mat_id < Mat_utils::max_materials());
       
-      const Core::Material_renderer cube_material_renderer(m_materials[mat_id], cube_model);
+      const Core::Material_renderer cube_material_renderer(m_materials[mat_id], Model_factory::get_unit_cube());
       assert(cube_material_renderer);
       
       m_cube_entity.set_renderer(cube_material_renderer);
     }
     
     {
-      const Core::Model plane_model(Core::Directory::volatile_resource_path("/assets/models/unit_plane.obj"));
-      assert(plane_model);
-      
       uint32_t mat_id = 1;
       assert(mat_id < Mat_utils::max_materials());
       
-      const Core::Material_renderer plane_material_renderer(m_materials[mat_id], plane_model);
+      const Core::Material_renderer plane_material_renderer(m_materials[mat_id], Model_factory::get_unit_plane());
       assert(plane_material_renderer);
       
       m_plane_entity.set_renderer(plane_material_renderer);
