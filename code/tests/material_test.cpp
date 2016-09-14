@@ -16,6 +16,7 @@
 
 namespace {
 
+
 /*
   General camera settings.
 */
@@ -28,6 +29,7 @@ constexpr float camera_tilt = math::tau() * 0.03f;
 */
 constexpr float scene_plane_scale = 10.f;
 constexpr float scene_cube_scale = 2.f;
+constexpr float scene_delta_time_mod = 0.0005f;
   
 /*
   Calculates the camera orbit position for a given time.
@@ -58,6 +60,7 @@ camera_transform(const float time,
   
   return cam_trans;
 }
+
 
 } // anon ns
 
@@ -119,29 +122,32 @@ Material_test::Material_test(Core::Context &ctx)
 
   // ** Create Materials ** //
   {
+    // Creates the material and stores it in the out.
+    auto add_material = [](const Core::Shader &shd,
+                           const Core::Texture &tex,
+                           const uint32_t index,
+                           Core::Material *out)
+    {
+      char name[256];
+      memset(name, 0, sizeof(name));
+      sprintf(name, "test_material_%02d", index);
+    
+      Core::Material material(name);
+      material.set_shader(shd);
+      material.set_map_01(tex);
+      
+      *out = material;
+    };
+    
     uint32_t curr_mat = 0;
+    assert(curr_mat < Mat_utils::max_materials());
+    add_material(Shader_factory::get_fullbright(), Texture_factory::get_dev_green(), curr_mat, &m_materials[curr_mat]);
     
-    // Add material
-    {
-      Core::Material material_01("test_material_01");
-      material_01.set_shader(Shader_factory::get_fullbright());
-      material_01.set_map_01(Texture_factory::get_dev_green());
-      
-      assert(curr_mat < Mat_utils::max_materials());
-      m_materials[curr_mat++] = material_01;
-    }
-
-    // Add material
-    {
-      Core::Material material_02("test_material_02");
-      
-      material_02.set_shader(Shader_factory::get_fullbright());
-      material_02.set_map_01(Texture_factory::get_dev_red());
-      
-      assert(curr_mat < Mat_utils::max_materials());
-      m_materials[curr_mat++] = material_02;
-    }
+    ++curr_mat;
+    assert(curr_mat < Mat_utils::max_materials());
+    add_material(Shader_factory::get_fullbright(), Texture_factory::get_dev_red(), curr_mat, &m_materials[curr_mat]);
     
+    ++curr_mat;
     assert(curr_mat == Mat_utils::max_materials());
   }
   
@@ -177,7 +183,7 @@ Material_test::on_think()
     Orbits camera based on time.
   */
   m_camera_entity.set_transform(
-    camera_transform(get_world().get_time_running() * 0.001f,
+    camera_transform(get_world().get_time_running() * scene_delta_time_mod,
                      camera_tilt,
                      camera_distance,
                      camera_height)
