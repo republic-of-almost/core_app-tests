@@ -37,6 +37,8 @@ Camera_test::Camera_test(Core::Context &ctx)
 , m_camera_entity(get_world())
 , m_camera(m_camera_entity, ctx.get_width(), ctx.get_height())
 {
+  ctx.set_title("Camera Test");
+
   namespace Cam_utils = ::Test::Camera_test_utils;
 
   // Setup entities

@@ -2,6 +2,7 @@
 #include <tests/factories/texture_factory.hpp>
 #include <tests/factories/shader_factory.hpp>
 #include <tests/factories/model_factory.hpp>
+#include <tests/common.hpp>
 #include <core/entity/entity_ref.hpp>
 #include <core/common/directory.hpp>
 #include <core/model/model.hpp>
@@ -32,37 +33,6 @@ constexpr float scene_plane_scale     = 10.f;
 constexpr float scene_cube_scale      = 2.f;
 constexpr float scene_delta_time_mod  = 0.0005f;
 constexpr float scene_material_switch = 1.2f;
-
-
-/*
-  Calculates the camera orbit position for a given time.
-*/
-Core::Transform
-camera_transform(const float time,
-                 const float cam_tilt,
-                 const float cam_dist,
-                 const float cam_height)
-{
-  // Position of the camera over time.
-  const float x = math::cos(time) * cam_dist;
-  const float y = cam_height;
-  const float z = math::sin(time) * cam_dist;
-  const math::vec3 position = math::vec3_init(x, y, z);
-  
-  // Rotation of the camera over time.
-  const math::quat rotation  = math::quat_init_with_axis_angle(0.f, 1.f, 0.f, time - math::quart_tau());
-  const math::quat tilt_down = math::quat_init_with_axis_angle(1.f, 0.f, 0.f, cam_tilt);
-  const math::quat final_rot = math::quat_multiply(tilt_down, rotation);
-  
-  // Build Transform
-  const Core::Transform cam_trans (
-    position,
-    math::vec3_one(),
-    final_rot
-  );
-  
-  return cam_trans;
-}
 
 
 } // anon ns
@@ -116,10 +86,10 @@ Material_test::Material_test(Core::Context &ctx)
       m_camera_entity.set_name("Material Test Camera");
 
       m_camera_entity.set_transform(
-        camera_transform(0.f,
-                         camera_tilt,
-                         camera_distance,
-                         camera_height)
+        Common::Orbit_transform(0.f,
+                                camera_tilt,
+                                camera_distance,
+                                camera_height)
       );
     }
   }
@@ -227,10 +197,10 @@ Material_test::on_think()
     Orbits camera based on time.
   */
   m_camera_entity.set_transform(
-    camera_transform(get_world().get_time_running() * scene_delta_time_mod,
-                     camera_tilt,
-                     camera_distance,
-                     camera_height)
+    Common::Orbit_transform(get_world().get_time_running() * scene_delta_time_mod,
+                            camera_tilt,
+                            camera_distance,
+                            camera_height)
   );
 
   /*
