@@ -21,17 +21,19 @@ namespace {
   General camera settings.
 */
 constexpr float camera_distance = 10.f;
-constexpr float camera_height = 3.f;
-constexpr float camera_tilt = math::tau() * 0.03f;
+constexpr float camera_height   = 3.f;
+constexpr float camera_tilt     = math::tau() * 0.03f;
+
 
 /*
   Scene settings.
 */
-constexpr float scene_plane_scale = 10.f;
-constexpr float scene_cube_scale = 2.f;
-constexpr float scene_delta_time_mod = 0.0005f;
+constexpr float scene_plane_scale     = 10.f;
+constexpr float scene_cube_scale      = 2.f;
+constexpr float scene_delta_time_mod  = 0.0005f;
 constexpr float scene_material_switch = 1.2f;
-  
+
+
 /*
   Calculates the camera orbit position for a given time.
 */
@@ -136,7 +138,11 @@ Material_test::Material_test(Core::Context &ctx)
     
       Core::Material material(name);
       material.set_shader(shd);
-      material.set_map_01(tex);
+      
+      if(tex)
+      {
+        material.set_map_01(tex);
+      }
       
       *out = material;
     };
@@ -160,6 +166,10 @@ Material_test::Material_test(Core::Context &ctx)
     ++curr_mat;
     assert(curr_mat < Mat_utils::max_materials());
     add_material(Shader_factory::get_fullbright(), Texture_factory::get_dev_colored_squares(), curr_mat, &m_materials[curr_mat]);
+
+    ++curr_mat;
+    assert(curr_mat < Mat_utils::max_materials());
+    add_material(Shader_factory::get_noise(), Core::Texture(), curr_mat, &m_materials[curr_mat]);
     
     ++curr_mat;
     assert(curr_mat == Mat_utils::max_materials());

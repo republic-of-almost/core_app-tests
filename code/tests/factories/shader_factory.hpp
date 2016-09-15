@@ -10,6 +10,7 @@ namespace Shader_factory {
 
 
 Core::Shader      get_fullbright();
+Core::Shader      get_noise();
 
 
 } // ns

@@ -17,5 +17,15 @@ get_fullbright()
 }
 
 
+Core::Shader
+get_noise()
+{
+  static const Core::Shader shader(Core::Directory::volatile_resource_path("/assets/shaders/noise.ogl"));
+  assert(shader);
+  
+  return shader;
+}
+
+
 } // ns
 } // ns

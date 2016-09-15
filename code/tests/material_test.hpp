@@ -12,7 +12,7 @@ namespace Test {
 namespace Material_test_utils {
 
 
-constexpr uint32_t max_materials() { return 5; }
+constexpr uint32_t max_materials() { return 6; }
 
 
 } // ns
