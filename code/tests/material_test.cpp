@@ -30,6 +30,7 @@ constexpr float camera_tilt = math::tau() * 0.03f;
 constexpr float scene_plane_scale = 10.f;
 constexpr float scene_cube_scale = 2.f;
 constexpr float scene_delta_time_mod = 0.0005f;
+constexpr float scene_material_switch = 1.2f;
   
 /*
   Calculates the camera orbit position for a given time.
@@ -70,6 +71,7 @@ namespace Test {
 
 Material_test::Material_test(Core::Context &ctx)
 : App(ctx)
+, m_timer(0.f)
 , m_cube_entity(get_world())
 , m_plane_entity(get_world())
 , m_camera_entity(get_world())
@@ -146,6 +148,18 @@ Material_test::Material_test(Core::Context &ctx)
     ++curr_mat;
     assert(curr_mat < Mat_utils::max_materials());
     add_material(Shader_factory::get_fullbright(), Texture_factory::get_dev_red(), curr_mat, &m_materials[curr_mat]);
+
+    ++curr_mat;
+    assert(curr_mat < Mat_utils::max_materials());
+    add_material(Shader_factory::get_fullbright(), Texture_factory::get_dev_squares(), curr_mat, &m_materials[curr_mat]);
+
+    ++curr_mat;
+    assert(curr_mat < Mat_utils::max_materials());
+    add_material(Shader_factory::get_fullbright(), Texture_factory::get_dev_squares_large(), curr_mat, &m_materials[curr_mat]);
+
+    ++curr_mat;
+    assert(curr_mat < Mat_utils::max_materials());
+    add_material(Shader_factory::get_fullbright(), Texture_factory::get_dev_colored_squares(), curr_mat, &m_materials[curr_mat]);
     
     ++curr_mat;
     assert(curr_mat == Mat_utils::max_materials());
@@ -179,6 +193,26 @@ Material_test::Material_test(Core::Context &ctx)
 void
 Material_test::on_think()
 {
+  /*
+    After a time, change the materials randomly.
+  */
+  {
+    m_timer += get_world().get_delta_time();
+    
+    if(m_timer > scene_material_switch)
+    {
+      m_timer = 0.f;
+      
+      Core::Material_renderer cube_renderer = m_cube_entity.get_renderer();
+      cube_renderer.set_material(m_materials[rand() % Material_test_utils::max_materials()]);
+      m_cube_entity.set_renderer(cube_renderer);
+
+      Core::Material_renderer plane_renderer = m_plane_entity.get_renderer();
+      plane_renderer.set_material(m_materials[rand() % Material_test_utils::max_materials()]);
+      m_plane_entity.set_renderer(plane_renderer);
+    }
+  }
+
   /*
     Orbits camera based on time.
   */

@@ -37,10 +37,12 @@ Camera_test::Camera_test(Core::Context &ctx)
 , m_camera_entity(get_world())
 , m_camera(m_camera_entity, ctx.get_width(), ctx.get_height())
 {
+  namespace Cam_utils = ::Test::Camera_test_utils;
+
   // Setup entities
-  for(uint32_t i = 0; i < Camera_test_utils::max_cubes(); ++i)
+  for(uint32_t i = 0; i < Cam_utils::max_cubes(); ++i)
   {
-    const float delta = math::tau() / Camera_test_utils::max_cubes();
+    const float delta = math::tau() / math::to_float(Cam_utils::max_cubes());
     const float turn = i * delta;
     
     const float radius = 2.f;
@@ -96,7 +98,7 @@ Camera_test::Camera_test(Core::Context &ctx)
 void
 Camera_test::on_think()
 {
-  assert(false);
+  
 
   /*
     Allow the world to render.

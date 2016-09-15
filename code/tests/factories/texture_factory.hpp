@@ -12,6 +12,9 @@ namespace Texture_factory {
 Core::Texture       get_dev_green();
 Core::Texture       get_dev_red();
 Core::Texture       get_dev_orange();
+Core::Texture       get_dev_squares();
+Core::Texture       get_dev_squares_large();
+Core::Texture       get_dev_colored_squares();
 
 
 } // ns

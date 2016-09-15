@@ -11,7 +11,9 @@
 namespace Test {
 namespace Material_test_utils {
 
-constexpr uint32_t max_materials() { return 2; }
+
+constexpr uint32_t max_materials() { return 5; }
+
 
 } // ns
 
@@ -27,11 +29,11 @@ class Material_test : public App
 public:
 
   explicit          Material_test(Core::Context &ctx);
-  
   void              on_think() override;
   
 private:
 
+  float             m_timer = 0.f;
   Core::Entity      m_cube_entity;
   Core::Entity      m_plane_entity;
   Core::Entity      m_camera_entity;

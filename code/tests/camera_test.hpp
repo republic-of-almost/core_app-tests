@@ -11,7 +11,9 @@
 namespace Test {
 namespace Camera_test_utils {
 
+
 constexpr uint32_t max_cubes() { return 4; }
+
 
 } // ns
 
@@ -26,7 +28,6 @@ class Camera_test : public App
 public:
 
   explicit          Camera_test(Core::Context &ctx);
-  
   void              on_think() override;
   
 private:

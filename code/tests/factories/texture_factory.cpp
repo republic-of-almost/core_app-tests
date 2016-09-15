@@ -37,5 +37,35 @@ get_dev_orange()
 }
 
 
+Core::Texture
+get_dev_squares()
+{
+  static const Core::Texture texture(Core::Directory::volatile_resource_path("/assets/textures/dev_squares_512.png"));
+  assert(texture);
+  
+  return texture;
+}
+
+
+Core::Texture
+get_dev_squares_large()
+{
+  static const Core::Texture texture(Core::Directory::volatile_resource_path("/assets/textures/dev_squares_1024.png"));
+  assert(texture);
+  
+  return texture;
+}
+
+
+Core::Texture
+get_dev_colored_squares()
+{
+  static const Core::Texture texture(Core::Directory::volatile_resource_path("/assets/textures/dev_colored_squares_512.png"));
+  assert(texture);
+  
+  return texture;
+}
+
+
 } // ns
 } // ns
