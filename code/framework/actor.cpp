@@ -1,5 +1,6 @@
 #include <framework/actor.hpp>
 #include <core/transform/transform.hpp>
+#include <core/transform/transform_utils.hpp>
 #include <core/entity/entity_ref.hpp>
 #include <core/common/ray.hpp>
 #include <core/world/world.hpp>
@@ -84,7 +85,7 @@ Actor::apply_forces(const float dt)
 void
 Actor::move_fwd(const float fwd)
 {
-  const math::vec3 force = math::vec3_scale(Core::Transform::get_world_forward(), fwd);
+  const math::vec3 force = math::vec3_scale(Core::Transform_utils::get_world_forward(), fwd);
   m_pending_force = math::vec3_add(m_pending_force, force);
 }
 
@@ -92,7 +93,7 @@ Actor::move_fwd(const float fwd)
 void
 Actor::move_left(const float left)
 {
-  const math::vec3 force = math::vec3_scale(Core::Transform::get_world_left(), left);
+  const math::vec3 force = math::vec3_scale(Core::Transform_utils::get_world_left(), left);
   m_pending_force = math::vec3_add(m_pending_force, force);
 }
 

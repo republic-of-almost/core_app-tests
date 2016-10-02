@@ -3,6 +3,7 @@
 
 
 #include <core/world/world.hpp>
+#include <core/context/context.hpp>
 #include <core/common/core_fwd.hpp>
 
 
@@ -21,10 +22,12 @@ public:
 protected:
 
   Core::World&      get_world();
+  Core::Context&    get_ctx();
   
 private:
 
   Core::World       m_world;
+  Core::Context     &m_ctx;
 
 };
 

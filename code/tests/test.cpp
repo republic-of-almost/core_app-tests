@@ -6,6 +6,7 @@ namespace Test {
 
 App::App(Core::Context &ctx)
 : m_world(ctx)
+, m_ctx(ctx)
 {
 }
 
@@ -26,6 +27,13 @@ Core::World&
 App::get_world()
 {
   return m_world;
+}
+
+
+Core::Context&
+App::get_ctx()
+{
+  return m_ctx;
 }
 
 
