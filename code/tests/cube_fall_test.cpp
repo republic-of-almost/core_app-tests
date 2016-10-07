@@ -152,6 +152,13 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
 
     assert(cube_mat == Cube_fall_utils::max_materials());
   }
+  
+  // Callback
+  {
+    get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision_pair &collision)
+    {
+    });
+  }
 }
 
 

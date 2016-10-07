@@ -18,6 +18,7 @@
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/physics/collider.hpp>
+#include <core/physics/collision.hpp>
 #include <core/common/collision.hpp>
 #include <core/physics/rigidbody.hpp>
 #include <core/color/color.hpp>
@@ -26,6 +27,7 @@
 #include <core/debug/line_renderer.hpp>
 #include <utilities/logging.hpp>
 #include <math/vec/vec2.hpp>
+#include <factories/objects/object_factory.hpp>
 
 
 namespace Test {
@@ -33,11 +35,13 @@ namespace Test {
 
 Fps_test::Fps_test(Core::Context &ctx)
 : App(ctx)
-, m_player_entity(get_world())
+//, m_player_entity(get_world())
+, m_player_entity(Factory_entity::create(Factory_entity::get_id("Player"), get_world()))
+, m_player_body(get_world())
 , m_camera_entity(get_world())
 , m_scene
   {
-    Core::Entity(),
+    Factory_entity::create(Factory_entity::get_id("Ground"), get_world()),
     Core::Entity(),
     Core::Entity(),
     Core::Entity(),
@@ -75,13 +79,39 @@ Fps_test::Fps_test(Core::Context &ctx)
       math::quat_init()
     ));
     
-    const Core::Box_collider box(0.5f, 0.5f, 0.5f);
+//    const Core::Box_collider box(0.5f, 0.5f, 0.5f);
+//
+//    Core::Rigidbody rb;
+//    rb.set_mass(1.f);
+//    rb.set_collider(box);
+//    
+//    m_player_entity.set_rigidbody(rb);
+  }
+  
+  // Player body
+  {
+    m_player_body.set_name("Player_body");
     
+    Core::Material body_mat("Body Mat");
+    body_mat.set_shader(Shader_factory::get_fullbright());
+    body_mat.set_map_01(Texture_factory::get_dev_red());
+    
+    m_player_body.set_renderer(Core::Material_renderer(body_mat, Model_factory::get_unit_cube()));
+    
+    m_player_body.set_transform(Core::Transform(
+      math::vec3_zero(),
+      math::vec3_init(3, 1, 3),
+      math::quat_init()
+    ));
+    
+    const Core::Box_collider box(0.5f, 0.5f, 0.5f);
+
     Core::Rigidbody rb;
-    rb.set_mass(1.f);
+    rb.set_is_dynamic(false);
+    rb.set_mass(0.f);
     rb.set_collider(box);
     
-//    m_player_entity.set_rigidbody(rb);
+    m_player_body.set_rigidbody(rb);
   }
   
   // Camera
@@ -99,36 +129,37 @@ Fps_test::Fps_test(Core::Context &ctx)
   // Scene Entities
   {
     uint32_t scene_objs = 0;
-  
+    scene_objs++;
     // Ground
     {
-      assert(scene_objs < Fps_test_utils::max_scene_objects());
-      
-      Core::Entity ground(get_world());
-      ground.set_name("Ground");
-      
+//      assert(scene_objs < Fps_test_utils::max_scene_objects());
+//      
+//      Core::Entity ground(get_world());
+//      ground.set_name("Ground");
+//      
       Core::Material ground_mat("Ground Mat");
       ground_mat.set_shader(Shader_factory::get_fullbright());
       ground_mat.set_map_01(Texture_factory::get_dev_squares());
-      
-      ground.set_renderer(Core::Material_renderer(ground_mat, Model_factory::get_unit_cube()));
-      
-      ground.set_transform(Core::Transform(
-        math::vec3_zero(),
-        math::vec3_init(75.f, 1.f, 75.f),
-        math::quat_init()
-      ));
-      
-      const Core::Box_collider box(0.5f, 0.5f, 0.5f);
-      
-      Core::Rigidbody rb;
-      rb.set_mass(0.f);
-      rb.set_is_dynamic(false);
-      rb.set_collider(box);
-      
-      ground.set_rigidbody(rb);
-      
-      m_scene[scene_objs++] = static_cast<Core::Entity&&>(ground);
+      m_scene[0].set_renderer(Core::Material_renderer(ground_mat, Model_factory::get_unit_cube()));
+//
+//      ground.set_renderer(Core::Material_renderer(ground_mat, Model_factory::get_unit_cube()));
+//      
+//      ground.set_transform(Core::Transform(
+//        math::vec3_zero(),
+//        math::vec3_init(75.f, 1.f, 75.f),
+//        math::quat_init()
+//      ));
+//      
+//      const Core::Box_collider box(0.5f, 0.5f, 0.5f);
+//
+//      Core::Rigidbody rb;
+//      rb.set_mass(0.f);
+//      rb.set_is_dynamic(false);
+//      rb.set_collider(box);
+//      
+//      m_scene[0].set_rigidbody(rb);
+//
+//      m_scene[scene_objs++] = static_cast<Core::Entity&&>(ground);
     }
     
     // No Step box
@@ -232,6 +263,17 @@ Fps_test::Fps_test(Core::Context &ctx)
       
       m_scene[scene_objs++] = static_cast<Core::Entity&&>(wall);
     }
+    
+    // Double check we have it all and not 
+    assert(scene_objs <= Fps_test_utils::max_scene_objects());
+  }
+  
+  // Collision test
+  {
+    get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision_pair &coll)
+    {
+      printf("Collision with: %s \n", coll.with_this.get_entity().get_name());
+    });
   }
 }
 
@@ -320,20 +362,24 @@ Fps_test::on_think()
   {
     Core::Transform player_trans = m_player_entity.get_transform();
     const math::vec3 curr_pos = player_trans.get_position();
-  
     const math::vec3 world_down = math::vec3_scale(Core::Transform_utils::get_world_up(), -1.f);
-    const Core::Ray curr_ray(curr_pos, world_down);
-    const Core::Ray step_ray(next_step, world_down);
+    const math::vec3 ray_offset = math::vec3_add(world_down, math::vec3_init(0, -1, 0));
+    
+    const Core::Ray curr_ray(math::vec3_add(curr_pos, ray_offset), world_down);
+    const Core::Ray step_ray(math::vec3_add(next_step, ray_offset), world_down);
     
     const Core::Collision curr_step_collision = get_world().find_entity_by_ray(curr_ray);
     const Core::Collision next_step_collision = get_world().find_entity_by_ray(step_ray);
     assert(curr_step_collision);
     
+    const Core::Contact curr_ray_contact = curr_step_collision.get_contact(0);
+    const Core::Contact next_ray_contact = next_step_collision.get_contact(0);
+    
     // Check if can move.
     {
       bool can_step_up = true;
       {
-        if(math::get_y(next_step_collision.get_position()) > (math::get_y(curr_step_collision.get_position()) + 0.2f))
+        if(math::get_y(next_ray_contact.get_position()) > (math::get_y(curr_ray_contact.get_position()) + 0.2f))
         {
           can_step_up = false;
         }
@@ -341,18 +387,25 @@ Fps_test::on_think()
     
       if(can_step_up)
       {
-        const math::vec3 height = math::vec3_add(next_step_collision.get_position(), math::vec3_scale(Core::Transform_utils::get_world_up(), 4.f));
-        player_trans.set_position(height);
-        m_player_entity.set_transform(player_trans);
+        if(next_step_collision.has_hit())
+        {
+          const math::vec3 height = math::vec3_add(next_ray_contact.get_position(), math::vec3_scale(Core::Transform_utils::get_world_up(), 4.f));
+          player_trans.set_position(height);
+          m_player_entity.set_transform(player_trans);
+          
+          Core::Transform body_trans = m_player_body.get_transform();
+          body_trans.set_position(player_trans.get_position());
+          m_player_body.set_transform(body_trans);
+        }
       }
     }
     
     // Debug lines
-    Core::Debug::debug_line(curr_pos, curr_step_collision.get_position(), Core::Color_utils::magenta());
+    Core::Debug::debug_line(curr_pos, curr_ray_contact.get_position(), Core::Color_utils::magenta());
     
     if(next_step_collision)
     {
-      Core::Debug::debug_line(next_step, next_step_collision.get_position(), Core::Color_utils::green());
+      Core::Debug::debug_line(next_step, next_ray_contact.get_position(), Core::Color_utils::green());
     }
     else
     {
@@ -378,6 +431,8 @@ Fps_test::on_think()
       player_transform.get_rotation()
     ));
   }
+  
+//  get_world().get_overlapping_aabbs(const std::function<void (const Core::Collision_pairs *, const uint32_t)> &callback)
 
   /*
     Update and render the world
