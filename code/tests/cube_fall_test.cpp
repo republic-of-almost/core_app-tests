@@ -7,6 +7,7 @@
 #include <core/transform/transform.hpp>
 #include <core/entity/entity.hpp>
 #include <core/entity/entity_ref.hpp>
+#include <core/entity/entity_components.hpp>
 #include <core/resources/shader.hpp>
 #include <core/resources/texture.hpp>
 #include <core/model/model.hpp>
@@ -68,11 +69,14 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
   {
     m_ground_entity.set_name("Ground Entity");
     
-    m_ground_entity.set_transform(Core::Transform(
-      math::vec3_zero(),
-      math::vec3_init(150.f, 0.25f, 150.f),
-      math::quat_init()
-    ));
+    Core::Entity_component::set_transform(
+      m_ground_entity,
+      Core::Transform(
+        math::vec3_zero(),
+        math::vec3_init(150.f, 0.25f, 150.f),
+        math::quat_init()
+      )
+    );
     
     Core::Material ground_mat("Ground Material");
     ground_mat.set_shader(Shader_factory::get_fullbright());
@@ -88,7 +92,8 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
   {
     m_camera_entity.set_name("Camera Entity");
     
-    m_camera_entity.set_transform(
+    Core::Entity_component::set_transform(
+      m_camera_entity,
       Common::Orbit_transform(0, camera_tilt, camera_distance, camera_height)
     );
   }
@@ -191,7 +196,8 @@ Cube_fall_test::on_think()
   /*
     Update camera orbit
   */
-  m_camera_entity.set_transform(
+  Core::Entity_component::set_transform(
+    m_camera_entity,
     Common::Orbit_transform(get_world().get_time_running() * scene_delta_time_mod, camera_tilt, camera_distance, camera_height)
   );
   

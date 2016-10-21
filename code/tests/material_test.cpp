@@ -4,6 +4,7 @@
 #include <tests/factories/model_factory.hpp>
 #include <tests/common.hpp>
 #include <core/entity/entity_ref.hpp>
+#include <core/entity/entity_components.hpp>
 #include <core/common/directory.hpp>
 #include <core/model/model.hpp>
 #include <core/renderer/renderer.hpp>
@@ -65,7 +66,7 @@ Material_test::Material_test(Core::Context &ctx)
         math::quat_init()
       );
       
-      m_cube_entity.set_transform(cube_trans);
+      Core::Entity_component::set_transform(m_cube_entity, cube_trans);
     }
     
     // Scale up plane
@@ -78,14 +79,15 @@ Material_test::Material_test(Core::Context &ctx)
         math::quat_init()
       );
       
-      m_plane_entity.set_transform(scaled_up);
+      Core::Entity_component::set_transform(m_plane_entity, scaled_up);
     }
 
     // Back and up for the camera.
     {
       m_camera_entity.set_name("Material Test Camera");
 
-      m_camera_entity.set_transform(
+      Core::Entity_component::set_transform(
+        m_camera_entity,
         Common::Orbit_transform(0.f,
                                 camera_tilt,
                                 camera_distance,
@@ -196,7 +198,8 @@ Material_test::on_think()
   /*
     Orbits camera based on time.
   */
-  m_camera_entity.set_transform(
+  Core::Entity_component::set_transform(
+    m_camera_entity,
     Common::Orbit_transform(get_world().get_time_running() * scene_delta_time_mod,
                             camera_tilt,
                             camera_distance,

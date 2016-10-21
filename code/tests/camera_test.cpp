@@ -3,6 +3,7 @@
 #include <tests/factories/texture_factory.hpp>
 #include <tests/factories/shader_factory.hpp>
 #include <core/entity/entity_ref.hpp>
+#include <core/entity/entity_components.hpp>
 #include <core/common/directory.hpp>
 #include <core/model/model.hpp>
 #include <core/renderer/renderer.hpp>
@@ -12,7 +13,6 @@
 #include <core/transform/transform.hpp>
 #include <core/transform/transform_utils.hpp>
 #include <core/context/context.hpp>
-#include <core/camera/camera_properties.hpp>
 #include <core/color/color_predefined.hpp>
 
 
@@ -54,11 +54,14 @@ Camera_test::Camera_test(Core::Context &ctx)
     Core::Entity &entity = m_entities[i];
     entity.set_name("Camera");
     
-    entity.set_transform(Core::Transform(
-      math::vec3_init(x, y, camera_distance),
-      math::vec3_init(1.f, 1.f, math::to_float(i * 2) + 1.f),
-      math::quat_init_with_axis_angle(0.f, 0.f, 1.f, turn)
-    ));
+    Core::Entity_component::set_transform(
+      entity,
+      Core::Transform(
+        math::vec3_init(x, y, camera_distance),
+        math::vec3_init(1.f, 1.f, math::to_float(i * 2) + 1.f),
+        math::quat_init_with_axis_angle(0.f, 0.f, 1.f, turn)
+      )
+    );
     
     Core::Material cube_material("cube_material");
     cube_material.set_map_01(Texture_factory::get_dev_orange());
@@ -74,11 +77,14 @@ Camera_test::Camera_test(Core::Context &ctx)
   {
     m_camera_entity.set_name("Camera");
     
-    m_camera_entity.set_transform(Core::Transform(
-      math::vec3_init(0.f, 0.f, camera_distance),
-      math::vec3_one(),
-      math::quat_init()
-    ));
+    Core::Entity_component::set_transform(
+      m_camera_entity,
+      Core::Transform(
+        math::vec3_init(0.f, 0.f, camera_distance),
+        math::vec3_one(),
+        math::quat_init()
+      )
+    );
 
     m_camera.set_type(cam_type);
     m_camera.set_clear_color(Core::Color_utils::gray());

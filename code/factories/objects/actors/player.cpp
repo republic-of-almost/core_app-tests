@@ -6,6 +6,8 @@
 #include "player.hpp"
 #include <core/world/world.hpp>
 #include <core/entity/entity.hpp>
+#include <core/entity/entity_ref.hpp>
+#include <core/entity/entity_components.hpp>
 #include <core/transform/transform.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/physics/rigidbody.hpp>
@@ -38,7 +40,8 @@ player_create(Core::World &world, const Core::Transform *override_transform)
   {
     if(!override_transform)
     {
-      entity.set_transform(
+      Core::Entity_component::set_transform(
+        entity,
         Core::Transform(
           math::vec3_init(0, 0, 0),
           math::vec3_init(1, 1, 1),
@@ -48,7 +51,10 @@ player_create(Core::World &world, const Core::Transform *override_transform)
     }
     else
     {
-      entity.set_transform(*override_transform);
+      Core::Entity_component::set_transform(
+        entity,
+        *override_transform
+      );
     }
   }
   

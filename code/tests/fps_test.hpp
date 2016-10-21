@@ -31,7 +31,6 @@ private:
   Core::Entity      m_player_body;
   Core::Entity      m_camera_entity;
   Core::Entity      m_scene[Fps_test_utils::max_scene_objects()];
-  Core::Camera      m_camera;
   math::vec3        m_camera_offset = math::vec3_zero();
 
 }; // class
