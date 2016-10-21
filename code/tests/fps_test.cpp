@@ -37,10 +37,12 @@ namespace Test {
 
 Fps_test::Fps_test(Core::Context &ctx)
 : App(ctx)
-//, m_player_entity(get_world())
-, m_player_entity(Factory_entity::create(Factory_entity::get_id("Player"), get_world()))
-, m_player_body(get_world())
-, m_camera_entity(get_world())
+, m_player_entities
+  {
+    Factory_entity::create(Factory_entity::get_id("Player"), get_world()),
+    Core::Entity(get_world()),
+    Core::Entity(get_world()),
+  }
 , m_scene
   {
     Factory_entity::create(Factory_entity::get_id("Ground"), get_world()),
@@ -64,18 +66,18 @@ Fps_test::Fps_test(Core::Context &ctx)
   
   // Player
   {
-    m_player_entity.set_name("Player");
+    m_player_entities[Fps_test_utils::Player_part::head].set_name("Player");
   
     Core::Material player_mat("Player Mat");
     player_mat.set_shader(Shader_factory::get_fullbright());
     player_mat.set_map_01(Texture_factory::get_dev_orange());
     
-    m_player_entity.set_renderer(Core::Material_renderer(player_mat, Model_factory::get_unit_cube()));
+    m_player_entities[Fps_test_utils::Player_part::head].set_renderer(Core::Material_renderer(player_mat, Model_factory::get_unit_cube()));
     
     const float scale = 0.4f;
     
     Core::Entity_component::set_transform(
-      m_player_entity,
+      m_player_entities[Fps_test_utils::Player_part::head],
       Core::Transform(
         math::vec3_init(0.f, 4.f, 10.f),
         math::vec3_init(scale, scale * math::g_ratio(), scale),
@@ -94,17 +96,17 @@ Fps_test::Fps_test(Core::Context &ctx)
   
   // Player body
   {
-    m_player_body.set_name("Player_body");
-    m_player_body.set_user_data((uintptr_t)&m_player_entity);
+    m_player_entities[Fps_test_utils::Player_part::body].set_name("Player_body");
+    m_player_entities[Fps_test_utils::Player_part::body].set_user_data((uintptr_t)&m_player_entities[Fps_test_utils::Player_part::body]);
     
     Core::Material body_mat("Body Mat");
     body_mat.set_shader(Shader_factory::get_fullbright());
     body_mat.set_map_01(Texture_factory::get_dev_red());
     
-    m_player_body.set_renderer(Core::Material_renderer(body_mat, Model_factory::get_unit_cube()));
+    m_player_entities[Fps_test_utils::Player_part::body].set_renderer(Core::Material_renderer(body_mat, Model_factory::get_unit_cube()));
     
     Core::Entity_component::set_transform(
-      m_player_body,
+      m_player_entities[Fps_test_utils::Player_part::body],
       Core::Transform(
         math::vec3_zero(),
         math::vec3_init(3, 1, 3),
@@ -120,15 +122,15 @@ Fps_test::Fps_test(Core::Context &ctx)
     rb.set_collider(box);
     rb.set_is_trigger(true);
     
-    m_player_body.set_rigidbody(rb);
+    m_player_entities[Fps_test_utils::Player_part::body].set_rigidbody(rb);
   }
   
   // Camera
   {
-    m_camera_entity.set_name("Camera");
+    m_player_entities[Fps_test_utils::Player_part::camera].set_name("Camera");
     
     Core::Entity_component::set_transform(
-      m_camera_entity,
+      m_player_entities[Fps_test_utils::Player_part::camera],
       Core::Transform(
         math::vec3_init(0.f, 3.f, 10.f),
         math::vec3_zero(),
@@ -137,7 +139,7 @@ Fps_test::Fps_test(Core::Context &ctx)
     );
     
     const Core::Camera camera(ctx.get_width(), ctx.get_height());
-    Core::Entity_component::set_camera(m_camera_entity, camera);
+    Core::Entity_component::set_camera(m_player_entities[Fps_test_utils::Player_part::camera], camera);
   }
   
   // Scene Entities
@@ -328,10 +330,13 @@ Fps_test::Fps_test(Core::Context &ctx)
 void
 Fps_test::on_think()
 {
-    const Core::Transform player_transform = Core::Entity_component::get_transform(m_player_entity);
-    
-    math::vec3 next_step = player_transform.get_position();
+  Core::Entity_ref player_body   = m_player_entities[Fps_test_utils::Player_part::body];
+  Core::Entity_ref player_head   = m_player_entities[Fps_test_utils::Player_part::head];
+  Core::Entity_ref player_camera = m_player_entities[Fps_test_utils::Player_part::camera];
 
+  const Core::Transform player_transform = Core::Entity_component::get_transform(player_head);
+  math::vec3 next_step = player_transform.get_position();
+  
   /*
     FPS Controls.
   */
@@ -354,7 +359,7 @@ Fps_test::on_think()
         const float fwd  = math::get_y(move) * get_world().get_delta_time() * move_speed;
         const float left = math::get_x(move) * get_world().get_delta_time() * move_speed;
         
-        Core::Transform trans = Core::Entity_component::get_transform(m_player_entity);
+        Core::Transform trans = Core::Entity_component::get_transform(player_head);
         
         const math::vec3 fwd_movement  = math::vec3_add(trans.get_position(), math::vec3_scale(trans.get_forward(), fwd));
         const math::vec3 left_movement = math::vec3_add(fwd_movement, math::vec3_scale(trans.get_left(), left));
@@ -373,7 +378,7 @@ Fps_test::on_think()
       const float rot_value  = axis.x * 0.02f;
       const float head_value = axis.y * 0.02f;
 
-      Core::Transform trans = Core::Entity_component::get_transform(m_player_entity);
+      Core::Transform trans = Core::Entity_component::get_transform(player_head);
       
       const math::quat body_rot  = math::quat_init_with_axis_angle(Core::Transform_utils::get_world_up(), rot_value);
       const math::quat head_rot  = math::quat_init_with_axis_angle(Core::Transform_utils::get_world_left(), head_value);
@@ -383,7 +388,7 @@ Fps_test::on_think()
       
       trans.set_rotation(accum_head);
       
-      Core::Entity_component::set_transform(m_player_entity, trans);
+      Core::Entity_component::set_transform(player_head, trans);
     }
     
     /*
@@ -408,7 +413,7 @@ Fps_test::on_think()
     Cast rays to figer out where to go.
   */
   {
-    Core::Transform player_trans = Core::Entity_component::get_transform(m_player_entity);
+    Core::Transform player_trans = Core::Entity_component::get_transform(player_head);
     const math::vec3 curr_pos = player_trans.get_position();
     const math::vec3 world_down = math::vec3_scale(Core::Transform_utils::get_world_up(), -1.f);
     const math::vec3 ray_offset = math::vec3_add(world_down, math::vec3_init(0, -1, 0));
@@ -440,11 +445,11 @@ Fps_test::on_think()
         {
           const math::vec3 height = math::vec3_add(next_ray_contact.get_position(), math::vec3_scale(Core::Transform_utils::get_world_up(), 4.f));
           player_trans.set_position(height);
-          Core::Entity_component::set_transform(m_player_entity, player_trans);
+          Core::Entity_component::set_transform(player_head, player_trans);
           
-          Core::Transform body_trans = Core::Entity_component::get_transform(m_player_body);
+          Core::Transform body_trans = Core::Entity_component::get_transform(player_body);
           body_trans.set_position(player_trans.get_position());
-          Core::Entity_component::set_transform(m_player_body, body_trans);
+          Core::Entity_component::set_transform(player_body, body_trans);
         }
       }
     }
@@ -466,7 +471,7 @@ Fps_test::on_think()
     Camera to player's head.
   */
   {
-    const Core::Transform player_transform = Core::Entity_component::get_transform(m_player_entity);
+    const Core::Transform player_transform = Core::Entity_component::get_transform(player_head);
     
     const math::vec3 back       = math::vec3_scale(player_transform.get_forward(), -1.f);
     const math::vec3 up         = player_transform.get_up();
@@ -475,7 +480,7 @@ Fps_test::on_think()
     const math::vec3 final_pos  = math::vec3_add(trail_pos, math::vec3_scale(up, get_y(m_camera_offset)));
     
     Core::Entity_component::set_transform(
-      m_camera_entity,
+      player_camera,
       Core::Transform(
         final_pos,
         math::vec3_one(),

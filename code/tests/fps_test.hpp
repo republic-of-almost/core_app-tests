@@ -13,6 +13,16 @@ namespace Fps_test_utils {
 
 
 constexpr uint32_t max_scene_objects() { return 12; }
+constexpr uint32_t max_player_entities() { return 3; }
+
+namespace Player_part {
+enum ENUM
+{
+  head,
+  body,
+  camera,
+};
+} // ns
 
 
 } // ns
@@ -27,9 +37,7 @@ public:
   
 private:
 
-  Core::Entity      m_player_entity;
-  Core::Entity      m_player_body;
-  Core::Entity      m_camera_entity;
+  Core::Entity      m_player_entities[Fps_test_utils::max_player_entities()];
   Core::Entity      m_scene[Fps_test_utils::max_scene_objects()];
   math::vec3        m_camera_offset = math::vec3_zero();
 
