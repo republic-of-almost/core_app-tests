@@ -67,10 +67,13 @@ Camera_test::Camera_test(Core::Context &ctx)
     cube_material.set_map_01(Texture_factory::get_dev_orange());
     cube_material.set_shader(Shader_factory::get_fullbright());
     
-    entity.set_renderer(Core::Material_renderer(
-      Model_factory::get_unit_cube(),
-      cube_material
-    ));
+    Core::Entity_component::set_renderer(
+      entity,
+      Core::Material_renderer(
+        Model_factory::get_unit_cube(),
+        cube_material
+      )
+    );
   }
   
   // Setup Camera

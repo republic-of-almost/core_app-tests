@@ -156,7 +156,7 @@ Material_test::Material_test(Core::Context &ctx)
       const Core::Material_renderer cube_material_renderer(m_materials[mat_id], Model_factory::get_unit_cube());
       assert(cube_material_renderer);
       
-      m_cube_entity.set_renderer(cube_material_renderer);
+      Core::Entity_component::set_renderer(m_cube_entity, cube_material_renderer);
     }
     
     {
@@ -166,7 +166,7 @@ Material_test::Material_test(Core::Context &ctx)
       const Core::Material_renderer plane_material_renderer(m_materials[mat_id], Model_factory::get_unit_plane());
       assert(plane_material_renderer);
       
-      m_plane_entity.set_renderer(plane_material_renderer);
+      Core::Entity_component::set_renderer(m_plane_entity, plane_material_renderer);
     }
   }
 }
@@ -185,13 +185,13 @@ Material_test::on_think()
     {
       m_timer = 0.f;
       
-      Core::Material_renderer cube_renderer = m_cube_entity.get_renderer();
+      Core::Material_renderer cube_renderer = Core::Entity_component::get_renderer(m_cube_entity);
       cube_renderer.set_material(m_materials[rand() % Material_test_utils::max_materials()]);
-      m_cube_entity.set_renderer(cube_renderer);
+      Core::Entity_component::set_renderer(m_cube_entity, cube_renderer);
 
-      Core::Material_renderer plane_renderer = m_plane_entity.get_renderer();
+      Core::Material_renderer plane_renderer = Core::Entity_component::get_renderer(m_plane_entity);
       plane_renderer.set_material(m_materials[rand() % Material_test_utils::max_materials()]);
-      m_plane_entity.set_renderer(plane_renderer);
+      Core::Entity_component::set_renderer(m_plane_entity, plane_renderer);
     }
   }
 

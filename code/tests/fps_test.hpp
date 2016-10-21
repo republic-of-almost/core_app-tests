@@ -15,6 +15,7 @@ namespace Fps_test_utils {
 constexpr uint32_t max_scene_objects() { return 12; }
 constexpr uint32_t max_player_entities() { return 3; }
 
+
 namespace Player_part {
 enum ENUM
 {

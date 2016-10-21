@@ -48,7 +48,7 @@ setup_collider(Core::Entity_ref ref,
     rb.set_is_dynamic(false);
   }
   
-  ref.set_rigidbody(rb);
+  Core::Entity_component::set_rigidbody(ref, rb);
 }
 
 
@@ -83,7 +83,7 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
     ground_mat.set_map_01(Texture_factory::get_dev_orange());
     
     const Core::Material_renderer ground_renderer(ground_mat, Model_factory::get_unit_cube());
-    m_ground_entity.set_renderer(ground_renderer);
+    Core::Entity_component::set_renderer(m_ground_entity, ground_renderer);
     
     setup_collider(m_ground_entity, 0.f);
   }
@@ -183,7 +183,7 @@ Cube_fall_test::on_think()
       
       const Core::Material_renderer renderer(m_cube_materials[rand() % Cube_fall_utils::max_materials()],
                                              Model_factory::get_unit_cube());
-      new_cube.set_renderer(renderer);
+      Core::Entity_component::set_renderer(new_cube, renderer);
       
       setup_collider(new_cube);
     

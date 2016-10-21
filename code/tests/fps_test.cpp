@@ -62,8 +62,6 @@ Fps_test::Fps_test(Core::Context &ctx)
 {
   ctx.set_title("FPS Test");
   
-//  Core::Input::mouse_set_capture(get_ctx(), true);
-  
   // Player
   {
     m_player_entities[Fps_test_utils::Player_part::head].set_name("Player");
@@ -72,7 +70,7 @@ Fps_test::Fps_test(Core::Context &ctx)
     player_mat.set_shader(Shader_factory::get_fullbright());
     player_mat.set_map_01(Texture_factory::get_dev_orange());
     
-    m_player_entities[Fps_test_utils::Player_part::head].set_renderer(Core::Material_renderer(player_mat, Model_factory::get_unit_cube()));
+    Core::Entity_component::set_renderer(m_player_entities[Fps_test_utils::Player_part::head], Core::Material_renderer(player_mat, Model_factory::get_unit_cube()));
     
     const float scale = 0.4f;
     
@@ -84,14 +82,6 @@ Fps_test::Fps_test(Core::Context &ctx)
         math::quat_init()
       )
     );
-    
-//    const Core::Box_collider box(0.5f, 0.5f, 0.5f);
-//
-//    Core::Rigidbody rb;
-//    rb.set_mass(1.f);
-//    rb.set_collider(box);
-//    
-//    m_player_entity.set_rigidbody(rb);
   }
   
   // Player body
@@ -103,7 +93,7 @@ Fps_test::Fps_test(Core::Context &ctx)
     body_mat.set_shader(Shader_factory::get_fullbright());
     body_mat.set_map_01(Texture_factory::get_dev_red());
     
-    m_player_entities[Fps_test_utils::Player_part::body].set_renderer(Core::Material_renderer(body_mat, Model_factory::get_unit_cube()));
+    Core::Entity_component::set_renderer(m_player_entities[Fps_test_utils::Player_part::body], Core::Material_renderer(body_mat, Model_factory::get_unit_cube()));
     
     Core::Entity_component::set_transform(
       m_player_entities[Fps_test_utils::Player_part::body],
@@ -122,7 +112,7 @@ Fps_test::Fps_test(Core::Context &ctx)
     rb.set_collider(box);
     rb.set_is_trigger(true);
     
-    m_player_entities[Fps_test_utils::Player_part::body].set_rigidbody(rb);
+    Core::Entity_component::set_rigidbody(m_player_entities[Fps_test_utils::Player_part::body], rb);
   }
   
   // Camera
@@ -148,34 +138,10 @@ Fps_test::Fps_test(Core::Context &ctx)
     scene_objs++;
     // Ground
     {
-//      assert(scene_objs < Fps_test_utils::max_scene_objects());
-//      
-//      Core::Entity ground(get_world());
-//      ground.set_name("Ground");
-//      
       Core::Material ground_mat("Ground Mat");
       ground_mat.set_shader(Shader_factory::get_fullbright());
       ground_mat.set_map_01(Texture_factory::get_dev_squares());
-      m_scene[0].set_renderer(Core::Material_renderer(ground_mat, Model_factory::get_unit_cube()));
-//
-//      ground.set_renderer(Core::Material_renderer(ground_mat, Model_factory::get_unit_cube()));
-//      
-//      ground.set_transform(Core::Transform(
-//        math::vec3_zero(),
-//        math::vec3_init(75.f, 1.f, 75.f),
-//        math::quat_init()
-//      ));
-//      
-//      const Core::Box_collider box(0.5f, 0.5f, 0.5f);
-//
-//      Core::Rigidbody rb;
-//      rb.set_mass(0.f);
-//      rb.set_is_dynamic(false);
-//      rb.set_collider(box);
-//      
-//      m_scene[0].set_rigidbody(rb);
-//
-//      m_scene[scene_objs++] = static_cast<Core::Entity&&>(ground);
+      Core::Entity_component::set_renderer(m_scene[0], Core::Material_renderer(ground_mat, Model_factory::get_unit_cube()));
     }
     
     // No Step box
@@ -189,7 +155,7 @@ Fps_test::Fps_test(Core::Context &ctx)
       no_step_mat.set_shader(Shader_factory::get_fullbright());
       no_step_mat.set_map_01(Texture_factory::get_dev_red());
       
-      no_step.set_renderer(Core::Material_renderer(no_step_mat, Model_factory::get_unit_cube()));
+      Core::Entity_component::set_renderer(no_step, Core::Material_renderer(no_step_mat, Model_factory::get_unit_cube()));
       
       Core::Entity_component::set_transform(
         no_step,
@@ -207,7 +173,7 @@ Fps_test::Fps_test(Core::Context &ctx)
       rb.set_is_dynamic(true);
       rb.set_collider(box);
       
-      no_step.set_rigidbody(rb);
+      Core::Entity_component::set_rigidbody(no_step, rb);
       
       m_scene[scene_objs++] = static_cast<Core::Entity&&>(no_step);
     }
@@ -227,7 +193,7 @@ Fps_test::Fps_test(Core::Context &ctx)
         step_mat.set_shader(Shader_factory::get_fullbright());
         step_mat.set_map_01(Texture_factory::get_dev_green());
         
-        step_box.set_renderer(Core::Material_renderer(step_mat, Model_factory::get_unit_cube()));
+        Core::Entity_component::set_renderer(step_box, Core::Material_renderer(step_mat, Model_factory::get_unit_cube()));
         
         constexpr float thickness = 0.2f;
         
@@ -249,7 +215,7 @@ Fps_test::Fps_test(Core::Context &ctx)
         rb.set_is_dynamic(true);
         rb.set_collider(box);
         
-        step_box.set_rigidbody(rb);
+        Core::Entity_component::set_rigidbody(step_box, rb);
         
         m_scene[scene_objs++] = static_cast<Core::Entity&&>(step_box);
       }
@@ -266,7 +232,7 @@ Fps_test::Fps_test(Core::Context &ctx)
       no_step_mat.set_shader(Shader_factory::get_fullbright());
       no_step_mat.set_map_01(Texture_factory::get_dev_red());
       
-      wall.set_renderer(Core::Material_renderer(no_step_mat, Model_factory::get_unit_cube()));
+      Core::Entity_component::set_renderer(wall, Core::Material_renderer(no_step_mat, Model_factory::get_unit_cube()));
       
       Core::Entity_component::set_transform(
         wall,
@@ -284,7 +250,7 @@ Fps_test::Fps_test(Core::Context &ctx)
       rb.set_is_dynamic(true);
       rb.set_collider(box);
       
-      wall.set_rigidbody(rb);
+      Core::Entity_component::set_rigidbody(wall, rb);
       
       m_scene[scene_objs++] = static_cast<Core::Entity&&>(wall);
     }
@@ -307,11 +273,7 @@ Fps_test::Fps_test(Core::Context &ctx)
         
         for(const Core::Contact &contact : coll.with_this)
         {
-//          const Core::Contact contact = coll.with_this.get_contact(i);
           const math::vec3 bounce_back = math::vec3_scale(contact.get_normal(), contact.get_penetration_depth() * 10);
-          
-          // Needs to set the player transform as well as body.
-          // Phil Scene graph should be next.
           
           Core::Transform body_transform = Core::Entity_component::get_transform(ref);
           body_transform.set_position(math::vec3_add(body_transform.get_position(), bounce_back));
@@ -365,8 +327,6 @@ Fps_test::on_think()
         const math::vec3 left_movement = math::vec3_add(fwd_movement, math::vec3_scale(trans.get_left(), left));
         
         next_step = left_movement;
-        
-//        m_player_entity.set_transform(trans);
       }
     }
     
@@ -423,7 +383,6 @@ Fps_test::on_think()
     
     const Core::Collision curr_step_collision = get_world().find_entity_by_ray(curr_ray);
     const Core::Collision next_step_collision = get_world().find_entity_by_ray(step_ray);
-//    assert(curr_step_collision);
     
     const Core::Contact curr_ray_contact = curr_step_collision.get_contact(0);
     const Core::Contact next_ray_contact = next_step_collision.get_contact(0);
@@ -478,19 +437,11 @@ Fps_test::on_think()
     const math::vec3 player_pos = player_transform.get_position();
     const math::vec3 trail_pos  = math::vec3_add(player_pos, math::vec3_scale(back, get_z(m_camera_offset)));
     const math::vec3 final_pos  = math::vec3_add(trail_pos, math::vec3_scale(up, get_y(m_camera_offset)));
-    
-    Core::Entity_component::set_transform(
-      player_camera,
-      Core::Transform(
-        final_pos,
-        math::vec3_one(),
-        player_transform.get_rotation()
-      )
-    );
+
+    const Core::Transform head_transform(final_pos, math::vec3_one(), player_transform.get_rotation());
+    Core::Entity_component::set_transform(player_camera, head_transform);
   }
   
-//  get_world().get_overlapping_aabbs(const std::function<void (const Core::Collision_pairs *, const uint32_t)> &callback)
-
   /*
     Update and render the world
   */
