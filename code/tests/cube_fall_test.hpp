@@ -39,7 +39,6 @@ private:
   float             m_rb_spawn_timer = 0.f;
   Core::Entity      m_ground_entity;
   Core::Entity      m_camera_entity;
-  Core::Camera      m_camera;
 };
 
 

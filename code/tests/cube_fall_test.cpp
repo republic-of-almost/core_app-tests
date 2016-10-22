@@ -61,7 +61,6 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
 , m_rb_spawn_timer(0.f)
 , m_ground_entity(get_world())
 , m_camera_entity(get_world())
-, m_camera(m_camera_entity, ctx.get_width(), ctx.get_height())
 {
   ctx.set_title("Cube Fall Test");
 
@@ -92,6 +91,8 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
   {
     m_camera_entity.set_name("Camera Entity");
     
+    Core::Entity_component::set_camera(m_camera_entity, Core::Camera(ctx.get_width(), ctx.get_height()));
+    
     Core::Entity_component::set_transform(
       m_camera_entity,
       Common::Orbit_transform(0, camera_tilt, camera_distance, camera_height)
@@ -104,12 +105,9 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
     char name[256];
     
     {
-      memset(name, 0, sizeof(name));
-      sprintf(name, "RB Material %d", cube_mat);
-      
       assert(cube_mat < Cube_fall_utils::max_materials());
       
-      m_cube_materials[cube_mat] = Core::Material(name);
+      m_cube_materials[cube_mat] = Core::Material("RB Red");
       m_cube_materials[cube_mat].set_shader(Shader_factory::get_fullbright());
       m_cube_materials[cube_mat].set_map_01(Texture_factory::get_dev_red());
       
@@ -117,12 +115,9 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
     }
     
     {
-      memset(name, 0, sizeof(name));
-      sprintf(name, "RB Material %d", cube_mat);
-      
       assert(cube_mat < Cube_fall_utils::max_materials());
     
-      m_cube_materials[cube_mat] = Core::Material("RB Material");
+      m_cube_materials[cube_mat] = Core::Material("RB Green");
       m_cube_materials[cube_mat].set_shader(Shader_factory::get_fullbright());
       m_cube_materials[cube_mat].set_map_01(Texture_factory::get_dev_green());
       
@@ -130,12 +125,9 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
     }
 
     {
-      memset(name, 0, sizeof(name));
-      sprintf(name, "RB Material %d", cube_mat);
-      
       assert(cube_mat < Cube_fall_utils::max_materials());
     
-      m_cube_materials[cube_mat] = Core::Material("RB Material");
+      m_cube_materials[cube_mat] = Core::Material("RB Squares");
       m_cube_materials[cube_mat].set_shader(Shader_factory::get_fullbright());
       m_cube_materials[cube_mat].set_map_01(Texture_factory::get_dev_squares());
       
@@ -143,12 +135,9 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
     }
 
     {
-      memset(name, 0, sizeof(name));
-      sprintf(name, "RB Material %d", cube_mat);
-      
       assert(cube_mat < Cube_fall_utils::max_materials());
     
-      m_cube_materials[cube_mat] = Core::Material("RB Material");
+      m_cube_materials[cube_mat] = Core::Material("RB Colored Squares");
       m_cube_materials[cube_mat].set_shader(Shader_factory::get_fullbright());
       m_cube_materials[cube_mat].set_map_01(Texture_factory::get_dev_colored_squares());
       
