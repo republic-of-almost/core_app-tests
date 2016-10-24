@@ -5,10 +5,6 @@
 #include <tests/fps_test.hpp>
 
 
-// - phys test
-#include <3rdparty/qu3e/q3.h>
-
-
 int
 main()
 {
@@ -19,10 +15,10 @@ main()
   
   
   // ** CREATE TEST ** //
-//  std::unique_ptr<Test::App> curr_test(new Test::Fps_test(context));
+  std::unique_ptr<Test::App> curr_test(new Test::Fps_test(context));
 //  std::unique_ptr<Test::App> curr_test(new Test::Material_test(context));
 //  std::unique_ptr<Test::App> curr_test(new Test::Camera_test(context));
-  std::unique_ptr<Test::App> curr_test(new Test::Cube_fall_test(context));
+//  std::unique_ptr<Test::App> curr_test(new Test::Cube_fall_test(context));
 
   // ** RUN TEST ** //
   while(context)

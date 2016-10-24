@@ -72,7 +72,7 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
       m_ground_entity,
       Core::Transform(
         math::vec3_zero(),
-        math::vec3_init(150.f, 0.25f, 150.f),
+        math::vec3_init(1.f, 0.25f, 1.f),
         math::quat_init()
       )
     );
@@ -102,7 +102,6 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
   // Create Cube Materials
   {
     uint32_t cube_mat = 0;
-    char name[256];
     
     {
       assert(cube_mat < Cube_fall_utils::max_materials());
@@ -173,6 +172,14 @@ Cube_fall_test::on_think()
       const Core::Material_renderer renderer(m_cube_materials[rand() % Cube_fall_utils::max_materials()],
                                              Model_factory::get_unit_cube());
       Core::Entity_component::set_renderer(new_cube, renderer);
+      Core::Entity_component::set_transform(
+        new_cube,
+        Core::Transform(
+          math::vec3_init(0, 10, 0),
+          math::vec3_init(1,1,1),
+          math::quat_init()
+        )
+      );
       
       setup_collider(new_cube);
     
