@@ -87,7 +87,7 @@ Fps_test::Fps_test(Core::Context &ctx)
   // Player body
   {
     m_player_entities[Fps_test_utils::Player_part::body].set_name("Player_body");
-    m_player_entities[Fps_test_utils::Player_part::body].set_user_data((uintptr_t)&m_player_entities[Fps_test_utils::Player_part::body]);
+    m_player_entities[Fps_test_utils::Player_part::body].set_user_data((uintptr_t)&m_player_entities[Fps_test_utils::Player_part::head]);
     
     Core::Material body_mat("Body Mat");
     body_mat.set_shader(Shader_factory::get_fullbright());
@@ -99,15 +99,15 @@ Fps_test::Fps_test(Core::Context &ctx)
       m_player_entities[Fps_test_utils::Player_part::body],
       Core::Transform(
         math::vec3_zero(),
-        math::vec3_init(3, 1, 3),
-        math::quat_init_with_axis_angle(0, 1, 0, 2.f)
+        math::vec3_init(2, 1, 2),
+        math::quat_init_with_axis_angle(0, 1, 0, 0.f)
       )
     );
     
     const Core::Box_collider box(0.5f, 0.5f, 0.5f);
 
     Core::Rigidbody rb;
-    rb.set_is_dynamic(false);
+    rb.set_is_kinematic(true);
     rb.set_mass(0.f);
     rb.set_collider(box);
     rb.set_is_trigger(true);
@@ -170,7 +170,7 @@ Fps_test::Fps_test(Core::Context &ctx)
       
       Core::Rigidbody rb;
       rb.set_mass(1.f);
-      rb.set_is_dynamic(true);
+      rb.set_is_kinematic(false);
       rb.set_collider(box);
       
       Core::Entity_component::set_rigidbody(no_step, rb);
@@ -212,7 +212,7 @@ Fps_test::Fps_test(Core::Context &ctx)
         
         Core::Rigidbody rb;
         rb.set_mass(1.f);
-        rb.set_is_dynamic(true);
+        rb.set_is_kinematic(false);
         rb.set_collider(box);
         
         Core::Entity_component::set_rigidbody(step_box, rb);
@@ -247,7 +247,7 @@ Fps_test::Fps_test(Core::Context &ctx)
       
       Core::Rigidbody rb;
       rb.set_mass(1.f);
-      rb.set_is_dynamic(true);
+      rb.set_is_kinematic(false);
       rb.set_collider(box);
       
       Core::Entity_component::set_rigidbody(wall, rb);
@@ -261,19 +261,20 @@ Fps_test::Fps_test(Core::Context &ctx)
   
   // Collision test
   {
-    get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision_pair &coll)
+    get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision &coll)
     {
-      printf("Collision with: %s \n", coll.with_this.get_entity().get_name());
-      if(strcmp(coll.with_this.get_entity().get_name(), "Player_body") == 0)
+      printf("Collision with: %s \n", coll.get_this_entity().get_name());
+      
+      if(strcmp(coll.get_this_entity().get_name(), "Player_body") == 0)
       {
-        Core::Entity_ref ref = coll.with_this.get_entity();
+        Core::Entity_ref ref = coll.get_this_entity();
         Core::Entity *player_entity = reinterpret_cast<Core::Entity*>(ref.get_user_data());
         
-        printf("Contact Points: %zu \n", coll.with_this.get_number_of_contacts());
+        printf("Contact Points: %zu \n", coll.get_number_of_contacts());
         
-        for(const Core::Contact &contact : coll.with_this)
+        for(const Core::Contact &contact : coll)
         {
-          const math::vec3 bounce_back = math::vec3_scale(contact.get_normal(), contact.get_penetration_depth() * 10);
+          const math::vec3 bounce_back = math::vec3_scale(contact.get_normal(), contact.get_penetration_depth());
           
           Core::Transform body_transform = Core::Entity_component::get_transform(ref);
           body_transform.set_position(math::vec3_add(body_transform.get_position(), bounce_back));
@@ -282,6 +283,8 @@ Fps_test::Fps_test(Core::Context &ctx)
           Core::Transform player_transform = Core::Entity_component::get_transform(*player_entity);
           player_transform.set_position(math::vec3_add(player_transform.get_position(), bounce_back));
           Core::Entity_component::set_transform(*player_entity, player_transform);
+          
+          break;
         }
       }
     });
@@ -381,18 +384,15 @@ Fps_test::on_think()
     const Core::Ray curr_ray(math::vec3_add(curr_pos, ray_offset), world_down);
     const Core::Ray step_ray(math::vec3_add(next_step, ray_offset), world_down);
     
-    const Core::Collision curr_step_collision = get_world().find_entity_by_ray(curr_ray);
-    const Core::Collision next_step_collision = get_world().find_entity_by_ray(step_ray);
-    
-    const Core::Contact curr_ray_contact = curr_step_collision.get_contact(0);
-    const Core::Contact next_ray_contact = next_step_collision.get_contact(0);
+    const Core::Contact curr_step_collision(get_world().find_entity_by_ray(curr_ray));
+    const Core::Contact next_step_collision(get_world().find_entity_by_ray(step_ray));
     
     // Check if can move.
     if(curr_step_collision)
     {
       bool can_step_up = true;
       {
-        if(math::get_y(next_ray_contact.get_position()) > (math::get_y(curr_ray_contact.get_position()) + 0.2f))
+        if(math::get_y(next_step_collision.get_position()) > (math::get_y(curr_step_collision.get_position()) + 0.4f))
         {
           can_step_up = false;
         }
@@ -400,9 +400,9 @@ Fps_test::on_think()
     
       if(can_step_up)
       {
-        if(next_step_collision.has_hit())
+        if(next_step_collision)
         {
-          const math::vec3 height = math::vec3_add(next_ray_contact.get_position(), math::vec3_scale(Core::Transform_utils::get_world_up(), 4.f));
+          const math::vec3 height = math::vec3_add(next_step_collision.get_position(), math::vec3_scale(Core::Transform_utils::get_world_up(), 4.f));
           player_trans.set_position(height);
           Core::Entity_component::set_transform(player_head, player_trans);
           
@@ -414,11 +414,11 @@ Fps_test::on_think()
     }
     
     // Debug lines
-    Core::Debug::debug_line(curr_pos, curr_ray_contact.get_position(), Core::Color_utils::magenta());
+    Core::Debug::debug_line(curr_pos, curr_step_collision.get_position(), Core::Color_utils::magenta());
     
     if(next_step_collision)
     {
-      Core::Debug::debug_line(next_step, next_ray_contact.get_position(), Core::Color_utils::green());
+      Core::Debug::debug_line(next_step, next_step_collision.get_position(), Core::Color_utils::green());
     }
     else
     {

@@ -68,7 +68,7 @@ ground_create(Core::World &world, const Core::Transform *override_transform)
 
       Core::Rigidbody rb;
       rb.set_mass(0.f);
-      rb.set_is_dynamic(false);
+      rb.set_is_kinematic(true);
       rb.set_collider(box);
     
       Core::Entity_component::set_rigidbody(entity, rb);

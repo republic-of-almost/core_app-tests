@@ -45,7 +45,7 @@ setup_collider(Core::Entity_ref ref,
   
   if(mass == 0.f)
   {
-    rb.set_is_dynamic(false);
+    rb.set_is_kinematic(true);
   }
   
   Core::Entity_component::set_rigidbody(ref, rb);
@@ -148,7 +148,7 @@ Cube_fall_test::Cube_fall_test(Core::Context &ctx)
   
   // Callback
   {
-    get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision_pair &collision)
+    get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision &collision)
     {
     });
   }
