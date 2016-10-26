@@ -98,8 +98,8 @@ Fps_test::Fps_test(Core::Context &ctx)
     Core::Entity_component::set_transform(
       m_player_entities[Fps_test_utils::Player_part::body],
       Core::Transform(
-        math::vec3_zero(),
-        math::vec3_init(2, 1, 2),
+        math::vec3_init(0, 0, 0),
+        math::vec3_init(2,2,2),
         math::quat_init_with_axis_angle(0, 1, 0, 0.f)
       )
     );
@@ -274,7 +274,7 @@ Fps_test::Fps_test(Core::Context &ctx)
         
         for(const Core::Contact &contact : coll)
         {
-          const math::vec3 bounce_back = math::vec3_scale(contact.get_normal(), contact.get_penetration_depth());
+          const math::vec3 bounce_back = math::vec3_scale(contact.get_normal(), contact.get_penetration_depth() * 0.2);
           
           Core::Transform body_transform = Core::Entity_component::get_transform(ref);
           body_transform.set_position(math::vec3_add(body_transform.get_position(), bounce_back));
@@ -283,8 +283,6 @@ Fps_test::Fps_test(Core::Context &ctx)
           Core::Transform player_transform = Core::Entity_component::get_transform(*player_entity);
           player_transform.set_position(math::vec3_add(player_transform.get_position(), bounce_back));
           Core::Entity_component::set_transform(*player_entity, player_transform);
-          
-          break;
         }
       }
     });
