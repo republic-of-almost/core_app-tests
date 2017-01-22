@@ -27,6 +27,7 @@ tests_data = {
 
   inc_dirs_macosx = {
     "/usr/local/include",
+    "/usr/local/include/bullet"
   },
 
   inc_dirs = {

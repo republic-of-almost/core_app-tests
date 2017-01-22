@@ -246,7 +246,7 @@ Fps_test::Fps_test(Core::Context &ctx)
       const Core::Box_collider box(0.5f, 0.5f, 0.5f);
       
       Core::Rigidbody rb;
-      rb.set_mass(1.f);
+      rb.set_mass(0.f);
       rb.set_is_kinematic(false);
       rb.set_collider(box);
       
